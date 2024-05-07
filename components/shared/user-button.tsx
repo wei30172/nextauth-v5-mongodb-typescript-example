@@ -19,7 +19,6 @@ import {
   AvatarImage,
   AvatarFallback,
 } from "@/components/ui/avatar"
-// import { Button } from "@/components/ui/button"
 import { SignInButton } from "@/components/shared/signin-button"
 import { SignOutButton } from "@/components/shared/signout-button"
 
@@ -63,12 +62,6 @@ export const AuthLink = ({ isSignedIn = false }) => (
       <IoMdLogIn className="h-4 w-4 mr-2"/>
       Sign In
     </SignInButton>
-    // <SignInButton mode="modal" asChild>
-    //   <Button>
-    //     <IoMdLogIn className="h-4 w-4 mr-2"/>
-    //     Sign In
-    //   </Button>
-    // </SignInButton>
   )
 )
 
@@ -93,9 +86,11 @@ export const UserButton = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-40" align="end">
       {user && (
+      <>
         <UserNavLinks userNavLinks={userNavLinks} pathName={pathName}/>
-      )}
         <DropdownMenuSeparator />
+      </>
+      )}
         <DropdownMenuItem>
           <AuthLink isSignedIn={user ? true : false} />
         </DropdownMenuItem>

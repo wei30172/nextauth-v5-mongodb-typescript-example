@@ -129,7 +129,7 @@ export const SignInForm = () => {
                       asChild
                       className="px-0 font-normal"
                     >
-                      <Link href="reset">
+                      <Link href="/reset">
                         Forgot password?
                       </Link>
                     </Button>

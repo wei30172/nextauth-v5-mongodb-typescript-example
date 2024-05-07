@@ -1,5 +1,3 @@
-import { Navbar } from "./_components/navbar"
-
 const ProtectedLayout = ({
   children
 }: {
@@ -7,7 +5,6 @@ const ProtectedLayout = ({
 }) => {
   return ( 
     <div className="h-full flex fex-col items-center justify-center">
-       <Navbar />
       {children}
     </div>
    )
