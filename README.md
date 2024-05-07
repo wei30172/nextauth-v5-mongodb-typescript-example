@@ -1,4 +1,4 @@
-## NextAuth.js v5, MongoDB, Typescript Example  
+## Next.js 14, NextAuth.js v5, MongoDB, Typescript Example  
 A demo project that uses NextAuth.js v5 for authentication, connects to MongoDB with Mongoose, and supports Google OAuth and email/password login.
 
 ## Features
