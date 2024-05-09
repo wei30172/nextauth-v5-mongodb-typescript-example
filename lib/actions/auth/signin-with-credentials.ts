@@ -8,8 +8,10 @@ import { routes } from "@/routes"
 import connectDB from "@/lib/db"
 import { User, TwoFactorToken, TwoFactorConfirmation } from "@/lib/models/auth.model"
 import { SignInValidation } from "@/lib/validations/auth"
-import { generateVerificationToken, generateTwoFactorToken } from "@/lib/token"
-import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mail"
+import { generateToken, generateCode } from "@/lib/jwt-token"
+// import { generateVerificationToken, generateTwoFactorToken } from "@/lib/token"
+import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mailer"
+// import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mail"
 
 type SignInInput = z.infer<typeof SignInValidation>
 
@@ -36,12 +38,20 @@ export const signInWithCredentials = async (
   }
 
   if (!existingUser.emailVerified) {
-    const verificationToken = await generateVerificationToken(existingUser.email)
+    const verificationToken = await generateToken({email: existingUser.email})
+    // console.log({verificationToken})
 
     await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token
+      existingUser.email,
+      verificationToken
     )
+
+    // const verificationToken = await generateVerificationToken(existingUser.email)
+
+    // await sendVerificationEmail(
+    //   verificationToken.email,
+    //   verificationToken.token
+    // )
 
     return { success: "Confirmation email sent!" }
   }
@@ -75,12 +85,20 @@ export const signInWithCredentials = async (
       })
       await twoFactorConfirmation.save()
     } else {
-      const twoFactorToken = await generateTwoFactorToken(existingUser.email)
-      
+      const twoFactorToken = await generateCode(existingUser.email)
+      // console.log({twoFactorToken})
+
       await sendTwoFactorTokenEmail(
-        twoFactorToken.email,
-        twoFactorToken.token
+        existingUser.email,
+        twoFactorToken
       )
+
+      // const twoFactorToken = await generateTwoFactorToken(existingUser.email)
+
+      // await sendTwoFactorTokenEmail(
+      //   twoFactorToken.email,
+      //   twoFactorToken.token
+      // )
 
       return { twoFactor: true }
     }

@@ -7,8 +7,10 @@ import { currentUser } from "@/lib/session"
 import connectDB from "@/lib/db"
 import { User } from "@/lib/models/auth.model"
 import { SettingsValidation } from "@/lib/validations/auth"
-import { generateVerificationToken } from "@/lib/token"
-import { sendVerificationEmail } from "@/lib/mail"
+import { generateToken } from "@/lib/jwt-token"
+// import { generateVerificationToken } from "@/lib/token"
+import { sendVerificationEmail } from "@/lib/mailer"
+// import { sendVerificationEmail } from "@/lib/mail"
 
 type SettingsInput = z.infer<typeof SettingsValidation> & {
   [key: string]: any
@@ -45,14 +47,20 @@ export const settings = async (values: SettingsInput) => {
       return { error: "Email already in use!" }
     }
 
-    const verificationToken = await generateVerificationToken(
-      values.email
+    const verificationToken = await generateToken({email:values.email})
+    // console.log({verificationToken})
+    
+    await sendVerificationEmail(
+      values.email,
+      verificationToken
     )
 
-    await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token
-    )
+    // const verificationToken = await generateVerificationToken(values.email)
+
+    // await sendVerificationEmail(
+    //   verificationToken.email,
+    //   verificationToken.token
+    // )
 
     await User.findByIdAndUpdate(user._id, {
       email: values.email,

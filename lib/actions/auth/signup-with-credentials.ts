@@ -6,8 +6,10 @@ import bcrypt from "bcryptjs"
 import connectDB from "@/lib/db"
 import { User } from "@/lib/models/auth.model"
 import { SignUpValidation } from "@/lib/validations/auth"
-import { generateVerificationToken } from "@/lib/token"
-import { sendVerificationEmail } from "@/lib/mail"
+import { generateToken } from "@/lib/jwt-token"
+// import { generateVerificationToken } from "@/lib/token"
+import { sendVerificationEmail } from "@/lib/mailer"
+// import { sendVerificationEmail } from "@/lib/mail"
 
 type SignUpWithCredentialsInput = z.infer<typeof SignUpValidation>
 
@@ -31,12 +33,20 @@ export const signUpWithCredentials = async (values: SignUpWithCredentialsInput) 
   const user = new User({ name, email, password: hashedPassword })
   await user.save()
 
-  const verificationToken = await generateVerificationToken(email)
-  
+  const verificationToken = await  generateToken({email})
+  // console.log({verificationToken})
+
   await sendVerificationEmail(
-    verificationToken.email,
-    verificationToken.token
+    email,
+    verificationToken
   )
+
+  // const verificationToken = await generateVerificationToken(email)
+  
+  // await sendVerificationEmail(
+  //   verificationToken.email,
+  //   verificationToken.token
+  // )
   
   return { success: "Confirmation email sent!" }
 }
