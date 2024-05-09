@@ -21,6 +21,8 @@ Create a .env file in the root directory and add the following variables:
 
 ```env
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
+# OR
+NEXT_PUBLIC_APP_URL="YOUR_VERCEL_DEPLOYMENT_DOMAIN"
 
 AUTH_SECRET="YOUR_AUTH_SECRET"
 
@@ -28,6 +30,8 @@ MONGODB_URI="YOUR_MONGODB_URI"
 
 GOOGLE_CLIENT_ID="YOUR_GOOGLE_CLIENT_ID"
 GOOGLE_CLIENT_SECRET="YOUR_GOOGLE_CLIENT_SECRET"
+
+TOKEN_SECRET="YOUR_TOKEN_SECRET"
 
 # Resend
 RESEND_API_KEY="YOUR_RESEND_API_KEY"
@@ -52,9 +56,9 @@ GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET
   
 - Choose the Web application.
 
-- Add to Authorized JavaScript origins: http://localhost:3000 .
+- Add to Authorized JavaScript origins: http://localhost:3000 OR "YOUR_VERCEL_DEPLOYMENT_DOMAIN".
 
-- Add to Authorized redirect URIs: http://localhost:3000/api/auth/callback/google.
+- Add to Authorized redirect URIs: http://localhost:3000/api/auth/callback/google OR "YOUR_VERCEL_DEPLOYMENT_DOMAIN"/api/auth/callback/google.
   
 - Finish by going to APIs & Services => OAuth consent screen and publishing the app.
 
