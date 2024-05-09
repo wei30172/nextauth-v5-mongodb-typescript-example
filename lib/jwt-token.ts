@@ -7,6 +7,7 @@ import { TwoFactorToken } from "@/lib/models/auth.model"
 export interface IPayload extends JwtPayload {
   email: string
 }
+
 export interface IError {
   error: string
 }

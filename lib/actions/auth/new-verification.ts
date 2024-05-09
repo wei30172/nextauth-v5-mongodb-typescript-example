@@ -9,7 +9,9 @@ export const newVerification = async (token: string) => {
   const res = await verifyToken(token)
   // console.log({res})
 
-  if (isTokenError(res)) { return res }
+  if (isTokenError(res)) {
+    return { error: res.error }
+  }
   
   await connectDB()
 

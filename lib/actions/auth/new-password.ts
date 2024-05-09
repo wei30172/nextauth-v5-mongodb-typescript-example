@@ -28,7 +28,9 @@ export const newPassword = async (
   const res = await verifyToken(token)
   // console.log({res})
 
-  if (isTokenError(res)) { return res }
+  if (isTokenError(res)) {
+    return { error: res.error }
+  }
 
   await connectDB()
   
