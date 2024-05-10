@@ -25,8 +25,12 @@ export const signUpWithCredentials = async (values: SignUpWithCredentialsInput) 
   await connectDB()
 
   const existingUser = await User.findOne({email})
-  if (existingUser) return { error: "Email already exists" }
-
+  if (existingUser) {
+    const error = existingUser.provider === "credentials" 
+      ? "Email already exists" 
+      : "Email has already been used for third-party login"
+    return { error }
+  }
   const salt = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash(password, salt)
 
