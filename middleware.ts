@@ -13,6 +13,7 @@ export default withAuthMiddleware((req) => {
   const isApiAuthRoute = nextUrl.pathname.startsWith(routes.apiAuthPrefix)
   const isAuthRoute = routes.auth.includes(nextUrl.pathname)
   const isPublicRoute = routes.public.includes(nextUrl.pathname)
+  const defaultUrl = new URL(routes.defaultLoginRedirect, nextUrl)
 
   if (isApiAuthRoute) {
     return undefined
@@ -20,16 +21,20 @@ export default withAuthMiddleware((req) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      const defaultUrl = new URL(routes.defaultLoginRedirect, nextUrl)
       return Response.redirect(defaultUrl)
     }
     return undefined
   }
 
   if (!isPublicRoute && !isLoggedIn) {
-    const signInUrl = new URL('signin', nextUrl)
-    signInUrl.searchParams.set('callbackUrl', nextUrl.pathname)
-    return Response.redirect(signInUrl)
+    let callbackUrl = nextUrl.pathname
+    if (nextUrl.search) callbackUrl += nextUrl.search
+    
+    const encodedCallbackUrl = encodeURIComponent(callbackUrl)
+    return Response.redirect(new URL(
+      `/signin?callbackUrl=${encodedCallbackUrl}`,
+      nextUrl
+    ))
   }
 
   return undefined
