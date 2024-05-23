@@ -108,8 +108,9 @@ export const signInWithCredentials = async (
     await signIn("credentials", {
       email,
       password,
-      redirectTo: callbackUrl || routes.defaultLoginRedirect
+      redirect:false
     })
+    return { url: callbackUrl || routes.defaultLoginRedirect }
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

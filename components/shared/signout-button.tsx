@@ -1,7 +1,7 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { logout } from "@/lib/actions/auth/signout"
+import { routes } from "@/routes"
 
 import { Button } from "@/components/ui/button"
 
@@ -12,15 +12,13 @@ interface SignOutButtonProps {
 export const SignOutButton = ({
   children
 }: SignOutButtonProps) => {
-  const router = useRouter()
-
-  const onClick = () => {
-    logout()
-    router.refresh()
+  const handleClick = async() => {
+    await logout()
+    window.location.assign(routes.defaultLogoutRedirect)
   }
 
   return (
-    <Button onClick={onClick} variant="destructive" className="w-full">
+    <Button onClick={handleClick} variant="destructive" className="w-full">
       {children}
     </Button>
   )
