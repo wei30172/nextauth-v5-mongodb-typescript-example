@@ -7,6 +7,7 @@ import connectDB from "@/lib/db"
 import { verifyToken, isTokenError } from "@/lib/jwt-token"
 import { User } from "@/lib/models/auth.model"
 // import { User, PasswordResetToken } from "@/lib/models/auth.model"
+import { UserProvider } from "@/lib/models/types"
 import { NewPasswordValidation } from "@/lib/validations/auth"
 
 type NewPasswordInput = z.infer<typeof NewPasswordValidation>
@@ -40,6 +41,10 @@ export const newPassword = async (
     return { error: "Email does not exist!" }
   }
 
+  if (existingUser.provider !== UserProvider.CREDENTIALS) {
+    return { error: "Email has already been used for third-party login" }
+  }
+  
   const { newPassword } = validatedFields.data
 
   const salt = await bcrypt.genSalt(10)

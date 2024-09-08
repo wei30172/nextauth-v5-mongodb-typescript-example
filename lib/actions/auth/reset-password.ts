@@ -4,6 +4,7 @@ import { z } from "zod"
 
 import connectDB from "@/lib/db"
 import { User } from "@/lib/models/auth.model"
+import { UserProvider } from "@/lib/models/types"
 import { ResetPasswordValidation } from "@/lib/validations/auth"
 import { generateToken } from "@/lib/jwt-token"
 // import { generatePasswordResetToken } from "@/lib/token"
@@ -27,6 +28,10 @@ export const resetPassword = async (values: ResetPasswordInput) => {
 
   if (!existingUser) {
     return { error: "Email not found!" }
+  }
+
+  if (existingUser.provider !== UserProvider.CREDENTIALS) {
+    return { error: "Email has already been used for third-party login" }
   }
   
   const passwordResetToken = await generateToken({email})

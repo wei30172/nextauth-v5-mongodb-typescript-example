@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs"
 import { currentUser } from "@/lib/session"
 import connectDB from "@/lib/db"
 import { User } from "@/lib/models/auth.model"
+import { UserProvider } from "@/lib/models/types"
 import { SettingsValidation } from "@/lib/validations/auth"
 import { generateToken } from "@/lib/jwt-token"
 // import { generateVerificationToken } from "@/lib/token"
@@ -33,7 +34,7 @@ export const settings = async (values: SettingsInput) => {
     return { error: "Unauthorized" }
   }
 
-  if (user.provider !== "credentials") {
+  if (user.provider !== UserProvider.CREDENTIALS) {
     values.email = undefined
     values.password = undefined
     values.newPassword = undefined

@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs"
 
 import connectDB from "@/lib/db"
 import { User } from "@/lib/models/auth.model"
+import { UserProvider } from "@/lib/models/types"
 import { SignUpValidation } from "@/lib/validations/auth"
 import { generateToken } from "@/lib/jwt-token"
 // import { generateVerificationToken } from "@/lib/token"
@@ -26,11 +27,12 @@ export const signUpWithCredentials = async (values: SignUpWithCredentialsInput) 
 
   const existingUser = await User.findOne({email})
   if (existingUser) {
-    const error = existingUser.provider === "credentials" 
+    const error = existingUser.provider === UserProvider.CREDENTIALS 
       ? "Email already exists" 
       : "Email has already been used for third-party login"
     return { error }
   }
+  
   const salt = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash(password, salt)
 
