@@ -3,10 +3,10 @@ import type { NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
 
+import { UserRole, UserProvider } from "@/lib/models/types"
 import { SignInValidation } from "@/lib/validations/auth"
 import { fetchUserByEmail, fetchUserById, signInWithOauth } from "@/lib/api-handler/user"
 import { fetchConfirmationByUserId, deleteConfirmationById } from "@/lib/api-handler/twofac"
-import { UserRole } from "@/lib/models/types"
 
 export default {
   session: { strategy: "jwt" },
@@ -51,11 +51,11 @@ export default {
     async signIn({ user, account, profile }) {
       // console.log({user})
       // console.log({account, profile})
-      if (account && account?.provider !== "credentials" && profile) {
+      if (account && account?.provider !== UserProvider.CREDENTIALS && profile) {
         return await signInWithOauth({account, profile})
       }
 
-      if (account?.provider === "credentials" && user._id) {
+      if (account?.provider === UserProvider.CREDENTIALS && user._id) {
         const existingUser = await fetchUserById(user._id)
         // console.log({existingUser})
 

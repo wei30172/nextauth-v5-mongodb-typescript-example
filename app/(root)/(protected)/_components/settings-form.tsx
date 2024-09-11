@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { useSession } from "next-auth/react"
+import { UserRole, UserProvider } from "@/lib/models/types"
 import { SettingsValidation } from "@/lib/validations/auth"
 import { settings } from "@/lib/actions/auth/settings"
-import { UserRole } from "@/lib/models/types"
 
 import {
   Card,
@@ -100,7 +100,7 @@ export const SettingsForm = () => {
                     <FormControl>
                       <Input
                         disabled={isPending}
-                        placeholder="your username"
+                        placeholder="your username on the web"
                         {...field}
                       />
                     </FormControl>
@@ -108,25 +108,25 @@ export const SettingsForm = () => {
                   </FormItem>
                 )}
               />
-              {user?.provider === "credentials" && (
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending || user?.provider !== UserProvider.CREDENTIALS}
+                        placeholder="mail@example.com"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {user?.provider === UserProvider.CREDENTIALS && (
                 <>
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            disabled={isPending}
-                            placeholder="mail@example.com"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                   <FormField
                     control={form.control}
                     name="password"
@@ -194,7 +194,7 @@ export const SettingsForm = () => {
                   </FormItem>
                 )}
               /> */}
-              {user?.provider === "credentials" && (
+              {user?.provider === UserProvider.CREDENTIALS && (
                 <FormField
                 control={form.control}
                 name="isTwoFactorEnabled"

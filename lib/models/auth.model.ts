@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import { UserRole, UserProvider } from "@/lib/models/types"
 
 export const userSchema = new mongoose.Schema({
   name: {
@@ -18,13 +19,13 @@ export const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["admin", "user"],
-    default: "user"
+    enum: [UserRole.USER, UserRole.ADMIN],
+    default: UserRole.USER
   },
   provider: {
     type: String,
-    enum: ["google", "credentials"],
-    default: "credentials"
+    enum: [UserProvider.CREDENTIALS, UserProvider.GOOGLE],
+    default: UserProvider.CREDENTIALS
   },
   emailVerified: {
     type: Date
