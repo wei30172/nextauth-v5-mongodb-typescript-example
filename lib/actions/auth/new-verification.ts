@@ -15,18 +15,37 @@ export const newVerification = async (token: string) => {
   
   await connectDB()
 
-  const existingUser =await User.findOne({email: res.email})
+  const existingUser =await User.findOne({
+    $or: [{email: res.email}, {emailPendingVerification: res.email}]
+  })
 
   if (!existingUser) {
     return { error: "Email does not exist!" }
   }
 
-  await User.findByIdAndUpdate(existingUser._id, {
-    emailVerified: new Date(),
-    email: res.email
-  })
+  // Check if the token corresponds to a pending email update
+  if (existingUser.emailPendingVerification === res.email) {
+    // This is for updating an existing user's email
+    await User.findByIdAndUpdate(existingUser._id, {
+      email: res.email, // Update the main email to the new one
+      emailVerified: new Date(), // Mark the new email as verified
+      emailPendingVerification: null // Clear the pending email field
+    })
 
-  return { success: "Email verified!" }
+    return { success: "Email updated and verified!" }
+  }
+
+  if (!existingUser.emailVerified) {
+    // This is for new user email verification
+    await User.findByIdAndUpdate(existingUser._id, {
+      emailVerified: new Date(), // Mark email as verified
+      email: res.email
+    })
+
+    return { success: "Email verified for new registration!" }
+  }
+
+  return { error: "Invalid verification request!" }
 
   // await connectDB()
 

@@ -20,6 +20,7 @@ export interface IUser extends Document {
   provider: UserProvider
   emailVerified: Date
   isTwoFactorEnabled: boolean
+  emailPendingVerification?: string
   createdAt: Date
   updatedAt: Date
 }

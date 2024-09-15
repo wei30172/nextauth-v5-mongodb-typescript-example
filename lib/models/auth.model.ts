@@ -33,6 +33,9 @@ export const userSchema = new mongoose.Schema({
   isTwoFactorEnabled: {
     type: Boolean,
     default: false
+  },
+  emailPendingVerification: {
+    type: String,
   }
 }, { timestamps: true })
 
