@@ -1,25 +1,25 @@
+import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { footerLinks } from "@/constants"
 
 import { SiAuth0 } from "react-icons/si"
 
 export const Footer = () => {
+  const tSection = useTranslations("Footer.ui.sections")
+  const tLink = useTranslations("Footer.ui.links")
+  
   return (
     <footer className="flex flex-col text-gray-500 text-sm mt-5 border-t border-gray-100">
       <div className="flex flex-wrap justify-center max-sm:flex-col gap-10 px-6 py-10 sm:gap-20">
-        {footerLinks.map((links) => (
-          <div key={links.title}>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-200">
-              {links.title}
+        {footerLinks.map((section) => (
+          <div key={section.sectionKey}>
+            <h3 className="pb-2 font-semibold text-gray-900 dark:text-gray-200">
+              {tSection(section.sectionKey)}
             </h3>
             <div className="flex flex-col gap-2">
-              {links.links.map((link) => (
-                <Link
-                  key={link.title}
-                  href={link.url}
-                  className="md:text-xs"
-                >
-                  {link.title}
+              {section.links.map((link) => (
+                <Link key={link.key} href={link.url} className="md:text-xs">
+                  {tLink(link.key)}
                 </Link>
               ))}
             </div>
@@ -35,12 +35,8 @@ export const Footer = () => {
           </p>
         </div>
         <div className="flex max-sm:flex-col gap-2 sm:gap-4">
-          <Link href="/">
-            Privacy Notice
-          </Link>
-          <Link href="/">
-            Conditions of Use
-          </Link>
+          <Link href="/">{tLink("privacy")}</Link>
+          <Link href="/">{tLink("terms")}</Link>
         </div>
       </div>
     </footer>

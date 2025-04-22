@@ -2,8 +2,9 @@ import Link from "next/link"
 
 import { SiAuth0 } from "react-icons/si"
 import { MainNav } from "@/components/shared/main-nav"
-import { ModeToggle } from "@/components/shared/mode-toggle"
-import { UserButton } from "@/components/shared/user-button"
+import { LocaleSwitcher } from "@/components/shared/button/locale-switcher"
+import { UserButton } from "@/components/shared/button/user-button"
+import { ModeToggle } from "@/components/shared/button/mode-toggle"
 
 export const Navbar = () => {
   return (
@@ -14,6 +15,7 @@ export const Navbar = () => {
         </Link>
         <MainNav />
         <div className="ml-auto flex items-center space-x-4">
+          <LocaleSwitcher />
           <UserButton />
           <ModeToggle />
         </div>

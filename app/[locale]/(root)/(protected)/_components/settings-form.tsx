@@ -33,8 +33,8 @@ import { Input } from "@/components/ui/input"
 // } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
-import { FormError } from "@/components/shared/form-error"
-import { FormSuccess } from "@/components/shared/form-success"
+import { FormError } from "@/components/shared/form/form-error"
+import { FormSuccess } from "@/components/shared/form/form-success"
 
 export const SettingsForm = () => {
   const { data: session, status, update } = useSession({ required: true })

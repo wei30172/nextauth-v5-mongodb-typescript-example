@@ -4,6 +4,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
 import { useCurrentUser } from "@/hooks/use-session"
+import { useTranslations } from "next-intl"
 
 import { FaRegUserCircle } from "react-icons/fa"
 import { IoMdLogIn, IoMdLogOut } from "react-icons/io"
@@ -19,8 +20,8 @@ import {
   AvatarImage,
   AvatarFallback,
 } from "@/components/ui/avatar"
-import { SignInButton } from "@/components/shared/signin-button"
-import { SignOutButton } from "@/components/shared/signout-button"
+import { SignInButton } from "@/components/shared/button/signin-button"
+import { SignOutButton } from "@/components/shared/button/signout-button"
 
 interface NavLink {
   title: string
@@ -51,36 +52,40 @@ const UserNavLinks = ({
   ))
 )
 
-export const AuthLink = ({ isSignedIn = false }) => (
-  isSignedIn ? (
+export const AuthLink = ({ isSignedIn = false }: { isSignedIn?: boolean }) => {
+  const tUi = useTranslations("Navbar.ui")
+
+  return isSignedIn ? (
     <SignOutButton>
       <IoMdLogOut className="h-4 w-4 mr-2"/>
-      Sign Out
+      {tUi("signout")}
     </SignOutButton>
   ) : (
     <SignInButton>
       <IoMdLogIn className="h-4 w-4 mr-2"/>
-      Sign In
+      {tUi("signin")}
     </SignInButton>
   )
-)
+}
 
 export const UserButton = () => {
   const pathName = usePathname()
   const user = useCurrentUser()
   // console.log({user})
 
+  const tUi = useTranslations("Navbar.ui")
+
   const userNavLinks = [
-    { title: "Settings", url: "/settings" }
+    { title: tUi("settings"), url: "/settings" }
   ]
   
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Avatar>
+        <Avatar className="h-8 w-8">
           <AvatarImage src={user?.image || ""} />
           <AvatarFallback className="bg-primary-500">
-            <FaRegUserCircle className="h-6 w-6"/>
+            <FaRegUserCircle className="h-full w-full"/>
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
@@ -92,7 +97,7 @@ export const UserButton = () => {
       </>
       )}
         <DropdownMenuItem>
-          <AuthLink isSignedIn={user ? true : false} />
+          <AuthLink isSignedIn={!!user} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

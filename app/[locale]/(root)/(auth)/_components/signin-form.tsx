@@ -19,9 +19,9 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { FormError } from "@/components/shared/form-error"
-import { FormSuccess } from "@/components/shared/form-success"
-import { FormWrapper } from "@/components/shared/form-wrapper"
+import { FormError } from "@/components/shared/form/form-error"
+import { FormSuccess } from "@/components/shared/form/form-success"
+import { FormWrapper } from "@/components/shared/form/form-wrapper"
 
 export const SignInForm = () => {
   const searchParams = useSearchParams()

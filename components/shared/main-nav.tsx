@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { usePathname } from "next/navigation"
+import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { mainNavLinks } from "@/constants"
@@ -9,6 +10,7 @@ import { mainNavLinks } from "@/constants"
 import { AiOutlineMenu } from "react-icons/ai"
 
 export const MainNav = () => {
+  const tLink = useTranslations("Navbar.ui.links")
   const [menuOpen, setMenuOpen] = useState(false)
   const pathName = usePathname()
 
@@ -25,14 +27,14 @@ export const MainNav = () => {
         {
           mainNavLinks.map((link) => (
             <Link
-              key={link.title}
+              key={link.key}
               href={link.url}
               className={cn(
                 "block py-2 px-4 text-sm transition-colors",
                 pathName === link.url ? "text-black dark:text-white" : "text-muted-foreground"
               )}
             >
-              {link.title}
+              {tLink(link.key)}
             </Link>
           ))
         }

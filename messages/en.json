@@ -1,0 +1,50 @@
+{
+  "HomePage": {
+    "ui": {
+      "title": "Welcome to the Home Page"
+    }
+  },
+  "Navbar": {
+    "ui": {
+      "signin": "Sign In",
+      "signout": "Sign Out",
+      "settings": "Settings",
+      "links": {
+        "newArrivals": "New Arrivals",
+        "bestSellers": "Best Sellers",
+        "sales": "Sales",
+        "categories": "Categories"
+      }
+    }
+  },
+  "Footer": {
+    "ui": {
+      "sections": {
+        "shop": "Shop",
+        "support": "Support",
+        "company": "Company",
+        "socials": "Socials"
+      },
+      "links": {
+        "newArrivals": "New Arrivals",
+        "bestSellers": "Best Sellers",
+        "sales": "Sales",
+        "categories": "Categories",
+        "customerService": "Customer Service",
+        "returns": "Returns & Exchanges",
+        "shipping": "Shipping Information",
+        "sizeGuide": "Size Guide",
+        "aboutUs": "About Us",
+        "careers": "Careers",
+        "blog": "Blog",
+        "affiliate": "Affiliate Program",
+        "instagram": "Instagram",
+        "twitter": "Twitter",
+        "facebook": "Facebook",
+        "pinterest": "Pinterest",
+        "privacy": "Privacy Notice",
+        "terms": "Conditions of Use"
+      }
+    }
+  }
+}

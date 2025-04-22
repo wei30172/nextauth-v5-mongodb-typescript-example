@@ -1,6 +1,6 @@
 "use client"
 
-import { ErrorCard } from "@/components/shared/error-card"
+import { ErrorCard } from "../_components/error-card"
 
 const AuthErrorPage = () => {
   return (

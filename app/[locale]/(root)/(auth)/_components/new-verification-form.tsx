@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { newVerification } from "@/lib/actions/auth/new-verification"
 
-import { FormError } from "@/components/shared/form-error"
-import { FormSuccess } from "@/components/shared/form-success"
-import { FormWrapper } from "@/components/shared/form-wrapper"
+import { FormError } from "@/components/shared/form/form-error"
+import { FormSuccess } from "@/components/shared/form/form-success"
+import { FormWrapper } from "@/components/shared/form/form-wrapper"
 import { Loader } from "@/components/shared/loader"
 
 export const NewVerificationForm = () => {

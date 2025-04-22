@@ -1,0 +1,50 @@
+{
+  "HomePage": {
+    "ui": {
+      "title": "歡迎來到首頁"
+    }
+  },
+  "Navbar": {
+    "ui": {
+      "signin": "登入",
+      "signout": "登出",
+      "settings": "帳戶設定",
+      "links": {
+        "newArrivals": "新品上市",
+        "bestSellers": "熱銷商品",
+        "sales": "特價專區",
+        "categories": "商品分類"
+      }
+    }
+  },
+  "Footer": {
+    "ui": {
+      "sections": {
+        "shop": "購物",
+        "support": "支援",
+        "company": "公司",
+        "socials": "社群"
+      },
+      "links": {
+        "newArrivals": "新品上市",
+        "bestSellers": "熱銷商品",
+        "sales": "特價專區",
+        "categories": "商品分類",
+        "customerService": "顧客服務",
+        "returns": "退換貨服務",
+        "shipping": "運送資訊",
+        "sizeGuide": "尺寸指南",
+        "aboutUs": "關於我們",
+        "careers": "人才招募",
+        "blog": "部落格",
+        "affiliate": "聯盟行銷計畫",
+        "instagram": "Instagram",
+        "twitter": "Twitter",
+        "facebook": "Facebook",
+        "pinterest": "Pinterest",
+        "privacy": "隱私權聲明",
+        "terms": "使用條款"
+      }
+    }
+  }
+}

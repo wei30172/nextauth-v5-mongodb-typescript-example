@@ -1,45 +1,25 @@
+import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server"
 import NextAuth from "next-auth"
-
-import { routes } from "@/routes"
 import authConfig from "@/auth.config"
+import { chain } from "@/middleware/chain"
+import { withAuthMiddleware } from "@/middleware/with-auth-middleware"
+import { withIntlMiddleware } from "@/middleware/with-Intl-middleware"
 
-const { auth: withAuthMiddleware } = NextAuth(authConfig)
+// Create a chain function
+const baseMiddleware = chain(withAuthMiddleware, withIntlMiddleware)
 
-export default withAuthMiddleware((req) => {
-  const isLoggedIn = !!req.auth
-  const { nextUrl } = req
-  // console.log({nextUrl})
+// Use NextAuth to generate auth middleware wrapper
+const { auth: withAuthWrapper } = NextAuth(authConfig)
 
-  const isApiAuthRoute = nextUrl.pathname.startsWith(routes.apiAuthPrefix)
-  const isAuthRoute = routes.auth.includes(nextUrl.pathname)
-  const isPublicRoute = routes.public.includes(nextUrl.pathname)
-  const defaultUrl = new URL(routes.defaultLoginRedirect, nextUrl)
 
-  if (isApiAuthRoute) {
-    return undefined
-  }
-
-  if (isAuthRoute) {
-    if (isLoggedIn) {
-      return Response.redirect(defaultUrl)
-    }
-    return undefined
-  }
-
-  if (!isPublicRoute && !isLoggedIn) {
-    let callbackUrl = nextUrl.pathname
-    if (nextUrl.search) callbackUrl += nextUrl.search
-    
-    const encodedCallbackUrl = encodeURIComponent(callbackUrl)
-    return Response.redirect(new URL(
-      `/signin?callbackUrl=${encodedCallbackUrl}`,
-      nextUrl
-    ))
-  }
-
-  return undefined
+const middleware = withAuthWrapper(async (req: NextRequest) => {
+  const res = NextResponse.next()
+  const event = {} as NextFetchEvent
+  return await baseMiddleware(req, event, res)
 })
 
+export default middleware
+
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
+  matcher: ["/((?!api|_next/static|_next/image|images|favicon.ico).*)"]
 }

@@ -2,11 +2,10 @@
 
 import { useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
-import { useSearchParams } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { NewPasswordValidation } from "@/lib/validations/auth"
-import { newPassword } from "@/lib/actions/auth/new-password"
+import { ResetPasswordValidation } from "@/lib/validations/auth"
+import { resetPassword } from "@/lib/actions/auth/reset-password"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -18,33 +17,29 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { FormError } from "@/components/shared/form-error"
-import { FormSuccess } from "@/components/shared/form-success"
-import { FormWrapper } from "@/components/shared/form-wrapper"
+import { FormError } from "@/components/shared/form/form-error"
+import { FormSuccess } from "@/components/shared/form/form-success"
+import { FormWrapper } from "@/components/shared/form/form-wrapper"
 
-export const NewPasswordForm = () => {
-  const searchParams = useSearchParams()
-  const token = searchParams.get("token")
-
+export const ResetForm = () => {
   const [error, setError] = useState<string | undefined>("")
   const [success, setSuccess] = useState<string | undefined>("")
   const [isPending, startTransition] = useTransition()
 
-  const form = useForm<z.infer<typeof NewPasswordValidation>>({
-    resolver: zodResolver(NewPasswordValidation),
+  const form = useForm<z.infer<typeof ResetPasswordValidation>>({
+    resolver: zodResolver(ResetPasswordValidation),
     defaultValues: {
-      newPassword: "",
-      confirmPassword: ""
+      email: ""
     }
   })
 
-  async function onSubmit(values: z.infer<typeof NewPasswordValidation>) {
+  async function onSubmit(values: z.infer<typeof ResetPasswordValidation>) {
     // console.log(values)
     setError("")
     setSuccess("")
 
     startTransition(() => {
-      newPassword(values, token)
+      resetPassword(values)
         .then((data) => {
           if (data?.error) {
             setError(data.error)
@@ -58,7 +53,7 @@ export const NewPasswordForm = () => {
 
   return (
     <FormWrapper
-      headerLabel="Enter a new password"
+      headerLabel="Forgot your password?"
       backButtonLabel="Back to sign in"
       backButtonHref="/signin"
     >
@@ -67,33 +62,14 @@ export const NewPasswordForm = () => {
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="newPassword"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New password</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isPending}
-                      type="password"
-                      placeholder="new password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm password</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="password"
-                      placeholder="confirm password"
+                      placeholder="mail@example.com"
                       {...field}
                     />
                   </FormControl>
@@ -110,7 +86,7 @@ export const NewPasswordForm = () => {
             type="submit"
             disabled={isPending}
           >
-            {isPending ? "Submitting..." : "Reset password"}
+            {isPending ? "Sending..." : "Send reset email"}
           </Button>
         </form>
       </Form>

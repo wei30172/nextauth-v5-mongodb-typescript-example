@@ -1,45 +1,45 @@
 export const mainNavLinks = [
-  { title: "New Arrivals", url: "/" },
-  { title: "Best Sellers", url: "/" },
-  { title: "Sales", url: "/" },
-  { title: "Categories", url: "/" }
+  { key: "newArrivals", url: "/" },
+  { key: "bestSellers", url: "/" },
+  { key: "sales", url: "/" },
+  { key: "categories", url: "/" }
 ]
 
 export const footerLinks = [
   {
-    title: "Shop",
+    sectionKey: "shop",
     links: [
-      { title: "New Arrivals", url: "/" },
-      { title: "Best Sellers", url: "/" },
-      { title: "Sales", url: "/" },
-      { title: "Categories", url: "/" }
+      { key: "newArrivals", url: "/" },
+      { key: "bestSellers", url: "/" },
+      { key: "sales", url: "/" },
+      { key: "categories", url: "/" }
     ],
   },
   {
-    title: "Support",
+    sectionKey: "support",
     links: [
-      { title: "Customer Service", url: "/" },
-      { title: "Returns & Exchanges", url: "/" },
-      { title: "Shipping Information", url: "/" },
-      { title: "Size Guide", url: "/" }
+      { key: "customerService", url: "/" },
+      { key: "returns", url: "/" },
+      { key: "shipping", url: "/" },
+      { key: "sizeGuide", url: "/" }
     ],
   },
   {
-    title: "Company",
+    sectionKey: "company",
     links: [
-      { title: "About Us", url: "/" },
-      { title: "Careers", url: "/" },
-      { title: "Blog", url: "/" },
-      { title: "Affiliate Program", url: "/" }
+      { key: "aboutUs", url: "/" },
+      { key: "careers", url: "/" },
+      { key: "blog", url: "/" },
+      { key: "affiliate", url: "/" }
     ],
   },
   {
-    title: "Socials",
+    sectionKey: "socials",
     links: [
-      { title: "Instagram", url: "/" },
-      { title: "Twitter", url: "/" },
-      { title: "Facebook", url: "/" },
-      { title: "Pinterest", url: "/" }
+      { key: "instagram", url: "/" },
+      { key: "twitter", url: "/" },
+      { key: "facebook", url: "/" },
+      { key: "pinterest", url: "/" }
     ],
   }
 ]

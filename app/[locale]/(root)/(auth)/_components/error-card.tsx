@@ -1,5 +1,5 @@
 import { FiAlertTriangle } from "react-icons/fi"
-import { FormWrapper } from "@/components/shared/form-wrapper"
+import { FormWrapper } from "@/components/shared/form/form-wrapper"
 
 export const ErrorCard = () => {
   return (
