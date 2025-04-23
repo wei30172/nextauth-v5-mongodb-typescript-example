@@ -1,7 +1,7 @@
 ## Next.js 14 Fullstack NextAuth.js & i18n Example (with MongoDB + TypeScript)
 A full-stack authentication demo built with Next.js 14, NextAuth.js v5, MongoDB (via Mongoose), and TypeScript.
 
-Supports both Google OAuth and email/password login, with internationalization and full-featured authentication flows.
+Supports both Google OAuth and email/password login, with internationalization (i18n) and comprehensive authentication flows.
 
 ## ✨ Features
 - Google OAuth Login – Authenticate users via their Google accounts.
