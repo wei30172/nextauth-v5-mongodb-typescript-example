@@ -1,23 +1,42 @@
-## Next.js 14, NextAuth.js v5, MongoDB, Typescript Example  
-A demo project that uses NextAuth.js v5 for authentication, connects to MongoDB with Mongoose, and supports Google OAuth and email/password login.
+## Next.js 14 Fullstack Auth & i18n Example (with MongoDB + TypeScript)
+A full-stack authentication demo built with Next.js 14, NextAuth.js v5, MongoDB (via Mongoose), and TypeScript.
 
-## Features
-- OAuth: Log in with Google.
+Supports both Google OAuth and email/password login, with internationalization and full-featured authentication flows.
 
-- Credential Login: Log in with email and password.
+## ✨ Features
+- Google OAuth Login – Authenticate users via their Google accounts.
 
-- Email Verification: Confirm user's email address.
+- Email & Password Authentication: Sign-in with email and password.
 
-- Forgot Password: Reset user's password through an email.
+- Email Verification: Ensure account validity by requiring users to confirm their email address.
 
-- Two Factor Verification: Obtain a six-digit login code through an email.
+- Forgot Password Flow: Allow users to reset their password through a email link.
 
-- Settings Edit: Change user's settings, including name, password, and toggle Two-factor verification.
+- Two-Factor Authentication (2FA): Login requires a digit verification code sent via email.
+
+- User Account Settings: Let users update their username, change passwords, and enable or disable 2FA.
+
+- Internationalization (i18n) with Auth Integration: Built-in locale routing with authentication middleware support.
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Environment Setup
-Create a .env file in the root directory and add the following variables:
+## 🚀 Getting Started
+
+Run the development server:
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## ⚙️ Environment Variables
+Create a .env file in the project root and include the following:
 
 ```env
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
@@ -42,54 +61,36 @@ EMAIL_USER="YOUR_EMAIL_USER"
 EMAIL_PASSWORD="YOUR_EMAIL_PASSWORD"
 ```
 
-GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET
+## 🔐 Getting Google OAuth Credentials
 
-- Navigate to [https://console.cloud.google.com](https://console.cloud.google.com/) .
+How to obtain GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET
+
+- Go to [Google Cloud Console](https://console.cloud.google.com/) .
 
 - Create a new project.
 
-- Head over to APIs & Services => Credentials.
+- Navigate to APIs & Services → Credentials.
   
-- Click on CREATE CREDENTIALS => OAuth client ID.
+- Click Create Credentials → OAuth client ID.
   
-- Choose the Web application.
+- Choose Web application.
 
-- Add to Authorized JavaScript origins: http://localhost:3000 .
+- Under Authorized JavaScript origins, add: http://localhost:3000 .
 
-- Add to Authorized redirect URIs: http://localhost:3000/api/auth/callback/google.
-  
-- Finish by going to APIs & Services => OAuth consent screen and publishing the app.
+- Under Authorized redirect URIs, add: http://localhost:3000/api/auth/callback/google.
 
-## Getting Started
+- Configure your OAuth consent screen and publish the app.
 
-First, run the development server:
+## 📚 Learn More
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
+Explore these official resources to learn more:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [NextAuth.js Documentation](https://next-auth.js.org) - Learn how to implement secure authentication with OAuth, credentials, JWT, and more.
+- [next-intl Documentation](https://next-intl.dev) - A internationalization solution for Next.js.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
+## ☁️ Deploy to Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
