@@ -2,7 +2,7 @@ interface HeaderProps {
   label: string
 }
 
-export const Header = ({
+export const FormHeader = ({
   label,
 }: HeaderProps) => {
   return (

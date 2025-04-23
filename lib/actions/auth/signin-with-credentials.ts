@@ -1,29 +1,33 @@
 "use server"
 
-import { z } from "zod"
 import { AuthError } from "next-auth"
+import { getTranslations } from "next-intl/server"
 
 import { signIn } from "@/auth"
 import { routes } from "@/routes"
 import connectDB from "@/lib/db"
 import { User, TwoFactorToken, TwoFactorConfirmation } from "@/lib/models/auth.model"
-import { SignInValidation } from "@/lib/validations/auth"
+import {
+  SignInFormValues,
+  getSignInFormSchema
+} from "@/lib/validations/auth"
 import { generateToken, generateCode } from "@/lib/jwt-token"
 // import { generateVerificationToken, generateTwoFactorToken } from "@/lib/token"
 import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mailer"
 // import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mail"
 
-type SignInInput = z.infer<typeof SignInValidation>
-
 export const signInWithCredentials = async (
-  values: SignInInput,
+  values: SignInFormValues,
   callbackUrl?: string | null
 ) => {
   // console.log({callbackUrl})
-  const validatedFields = SignInValidation.safeParse(values)
+  const t = await getTranslations("SignInForm.server")
+  const tError = await getTranslations("Common.error")
+  
+  const validatedFields = getSignInFormSchema().safeParse(values)
 
   if (!validatedFields.success) {
-    return { error: "Invalid fields!" }
+    return { error: tError("invalidFields") }
   }
   
   const { email, password, code } = validatedFields.data
@@ -34,7 +38,7 @@ export const signInWithCredentials = async (
   // console.log({existingUser})
   
   if (!existingUser || !existingUser.email || !existingUser.password) {
-    return { error: "Email does not exist!" }
+    return { error: t("error.emailNotFound") }
   }
 
   if (!existingUser.emailVerified) {
@@ -53,7 +57,7 @@ export const signInWithCredentials = async (
     //   verificationToken.token
     // )
 
-    return { success: "Confirmation email sent!" }
+    return { success: t("success.confirmationSent") }
   }
 
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
@@ -63,7 +67,7 @@ export const signInWithCredentials = async (
       })
 
       if (!twoFactorToken || twoFactorToken.token !== code) {
-        return { error: "Invalid code!" }
+        return { error: t("error.invalidCode") }
       }
 
       const hasExpired = new Date(twoFactorToken.expires) < new Date()
@@ -71,7 +75,7 @@ export const signInWithCredentials = async (
       await TwoFactorToken.findByIdAndDelete(twoFactorToken._id)
 
       if (hasExpired) {
-        return { error: "Code expired!" }
+        return { error: t("error.codeExpired") }
       }
 
       const existingConfirmation = await TwoFactorConfirmation.findOne({userId: existingUser._id})
@@ -115,9 +119,9 @@ export const signInWithCredentials = async (
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return { error: "Invalid credentials!" }
+          return { error: t("error.invalidCredentials") }
         default:
-          return { error: "Something went wrong!" }
+          return { error: tError("actionFailed") }
       }
     }
 

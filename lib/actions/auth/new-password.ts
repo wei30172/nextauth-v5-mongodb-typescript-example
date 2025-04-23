@@ -1,48 +1,52 @@
 "use server"
 
-import { z } from "zod"
 import bcrypt from "bcryptjs"
+import { getTranslations } from "next-intl/server"
 
 import connectDB from "@/lib/db"
 import { verifyToken, isTokenError } from "@/lib/jwt-token"
 import { User } from "@/lib/models/auth.model"
 // import { User, PasswordResetToken } from "@/lib/models/auth.model"
 import { UserProvider } from "@/lib/models/types"
-import { NewPasswordValidation } from "@/lib/validations/auth"
-
-type NewPasswordInput = z.infer<typeof NewPasswordValidation>
+import {
+  NewPasswordFormValues,
+  getNewPasswordFormSchema
+} from "@/lib/validations/auth"
 
 export const newPassword = async (
-  values: NewPasswordInput,
+  values: NewPasswordFormValues,
   token?: string | null
 ) => {
-  const validatedFields = NewPasswordValidation.safeParse(values)
+  const t = await getTranslations("NewPasswordForm.server")
+  const tError = await getTranslations("Common.error")
+
+  const validatedFields = getNewPasswordFormSchema().safeParse(values)
 
   if (!validatedFields.success) {
-    return { error: "Invalid fields!" }
+    return { error: tError("invalidFields") }
   }
 
   if (!token) {
-    return { error: "Missing token!" }
+    return { error: tError("missingToken") }
   }
 
   const res = await verifyToken(token)
   // console.log({res})
 
   if (isTokenError(res)) {
-    return { error: res.error }
+    return { error: tError(`${res.error}`) }
   }
 
   await connectDB()
   
-  const existingUser =await User.findOne({email: res.email})
+  const existingUser = await User.findOne({email: res.email})
 
   if (!existingUser) {
-    return { error: "Email does not exist!" }
+    return { error: t("error.emailNotFound") }
   }
 
   if (existingUser.provider !== UserProvider.CREDENTIALS) {
-    return { error: "Email has already been used for third-party login" }
+    return { error: t("error.emailThirdParty") }
   }
   
   const { newPassword } = validatedFields.data
@@ -54,7 +58,7 @@ export const newPassword = async (
     { password: hashedPassword }
   )
 
-  return { success: "Password updated!" }
+  return { success: t("success.passwordUpdated") }
 
   // await connectDB()
   

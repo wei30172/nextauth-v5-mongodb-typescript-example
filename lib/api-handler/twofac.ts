@@ -1,4 +1,4 @@
-import { fetcher } from "@/lib/utils"
+import { fetcher } from "@/lib/fetcher"
 
 export const fetchConfirmationByUserId = async (
   userId: string

@@ -1,16 +1,21 @@
 "use server"
 
+import { getTranslations } from "next-intl/server"
+
 import connectDB from "@/lib/db"
 import { verifyToken, isTokenError } from "@/lib/jwt-token"
 import { User } from "@/lib/models/auth.model"
 // import { User, VerificationToken } from "@/lib/models/auth.model"
 
 export const newVerification = async (token: string) => {
+  const t = await getTranslations("NewVerificationForm.server")
+  const tError = await getTranslations("Common.error")
+
   const res = await verifyToken(token)
   // console.log({res})
 
   if (isTokenError(res)) {
-    return { error: res.error }
+    return { error: tError(`${res.error}`) }
   }
   
   await connectDB()
@@ -20,7 +25,7 @@ export const newVerification = async (token: string) => {
   })
 
   if (!existingUser) {
-    return { error: "Email does not exist!" }
+    return { error: t("error.emailNotFound") }
   }
 
   // Check if the token corresponds to a pending email update
@@ -32,7 +37,7 @@ export const newVerification = async (token: string) => {
       emailPendingVerification: null // Clear the pending email field
     })
 
-    return { success: "Email updated and verified!" }
+    return { success: t("success.emailUpdated") }
   }
 
   if (!existingUser.emailVerified) {
@@ -42,10 +47,10 @@ export const newVerification = async (token: string) => {
       email: res.email
     })
 
-    return { success: "Email verified for new registration!" }
+    return { success: t("success.emailVerified") }
   }
 
-  return { error: "Invalid verification request!" }
+  return { error: t("error.invalidRequest") }
 
   // await connectDB()
 

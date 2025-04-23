@@ -1,23 +1,29 @@
 "use server"
 
-import { z } from "zod"
+import { getTranslations } from "next-intl/server"
 
 import connectDB from "@/lib/db"
 import { User } from "@/lib/models/auth.model"
 import { UserProvider } from "@/lib/models/types"
-import { ResetPasswordValidation } from "@/lib/validations/auth"
+import {
+  ResetPasswordFormValues,
+  getResetPasswordFormSchema
+} from "@/lib/validations/auth"
 import { generateToken } from "@/lib/jwt-token"
 // import { generatePasswordResetToken } from "@/lib/token"
 import { sendPasswordResetEmail } from "@/lib/mailer"
 // import { sendPasswordResetEmail } from "@/lib/mail"
 
-type ResetPasswordInput = z.infer<typeof ResetPasswordValidation>
+export const resetPassword = async (
+  values: ResetPasswordFormValues
+) => {
+  const t = await getTranslations("ResetForm.server")
+  const tError = await getTranslations("Common.error")
 
-export const resetPassword = async (values: ResetPasswordInput) => {
-  const validatedFields = ResetPasswordValidation.safeParse(values)
+  const validatedFields = getResetPasswordFormSchema().safeParse(values)
 
   if (!validatedFields.success) {
-    return { error: "Invalid email!" }
+    return { error: tError("invalidFields") }
   }
   
   const { email } = validatedFields.data
@@ -27,11 +33,11 @@ export const resetPassword = async (values: ResetPasswordInput) => {
   const existingUser = await User.findOne({email})
 
   if (!existingUser) {
-    return { error: "Email not found!" }
+    return { error: t("error.emailNotFound") }
   }
 
   if (existingUser.provider !== UserProvider.CREDENTIALS) {
-    return { error: "Email has already been used for third-party login" }
+    return { error: t("error.emailThirdParty") }
   }
   
   const passwordResetToken = await generateToken({email})
@@ -49,5 +55,5 @@ export const resetPassword = async (values: ResetPasswordInput) => {
   //   passwordResetToken.token
   // )
 
-  return { success: "Reset email sent!" }
+  return { success: t("success.resetSent") }
 }

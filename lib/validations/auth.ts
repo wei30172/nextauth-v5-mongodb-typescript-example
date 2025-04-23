@@ -1,83 +1,113 @@
 import * as z from "zod"
 import { UserRole } from "@/lib/models/types"
- 
-export const SignInValidation = z.object({
-  email: z.string()
-    .min(1, "Email is required")
-    .email("Invalid email"),
-  password: z.string()
-    .min(1, "Password is required")
-    .min(8, "Password must be 8+ characters"),
-  code: z.optional(z.string())
-})
 
-export const SignUpValidation = z
-  .object({
-    name: z.string()
-      .min(1, "Username is required")
-      .max(50, "Username must be less than 50 characters"),
-    email: z.string()
-      .min(1, "Email is required")
-      .email("Invalid email"),
-    password: z.string()
-      .min(1, "Password is required")
-      .min(8, "Password must be 8+ characters"),
-    confirmPassword: z.string()
-      .min(1, "Password confirmation is required"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Password do not match",
-  })
+export function getSignInFormSchema(t?: (key: string) => string) {
+  return z
+    .object({
+      email: z
+        .string()
+        .min(1, t?.("email.required") || "Email is required")
+        .email(t?.("email.invalid") || "Invalid email"),
+      password: z
+        .string()
+        .min(1, t?.("password.required") || "Password is required")
+        .min(8, t?.("password.invalid") || "Password must be 8+ characters"),
+        code: z.optional(z.string())
+    })
+}
+export type SignInFormValues = z.infer<ReturnType<typeof getSignInFormSchema>>
 
-export const ResetPasswordValidation = z
-  .object({
-    email: z.string()
-      .min(1, "Email is required")
-      .email("Invalid email")
-  })
+export function getSignUpFormSchema(t?: (key: string) => string) {
+  return z
+    .object({
+      name: z
+        .string()
+        .min(1, t?.("name.required") || "Username is required")
+        .max(50, t?.("name.invalid") || "Username must be less than 50 characters"),
+      email: z
+        .string()
+        .min(1, t?.("email.required") || "Email is required")
+        .email(t?.("email.invalid") || "Invalid email"),
+      password: z
+        .string()
+        .min(1, t?.("password.required") || "Password is required")
+        .min(8, t?.("password.invalid") || "Password must be 8+ characters"),
+      confirmPassword: z
+        .string()
+        .min(1, t?.("confirmPassword.required") || "Password confirmation is required")
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      path: ["confirmPassword"],
+      message: t?.("confirmPassword.invalid") || "Password do not match"
+    })
+}
+export type SignUpFormValues = z.infer<ReturnType<typeof getSignUpFormSchema>>
 
-  export const NewPasswordValidation = z
-  .object({
-    newPassword: z.string()
-      .min(1, "Password is required")
-      .min(8, "Password must be 8+ characters"),
-    confirmPassword: z.string()
-      .min(1, "Password confirmation is required"),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Password do not match",
-  })
+export function getResetPasswordFormSchema(t?: (key: string) => string) {
+  return z
+    .object({
+      email: z
+        .string()
+        .min(1, t?.("email.required") || "Email is required")
+        .email(t?.("email.invalid") || "Invalid email")
+    })
+}
+export type ResetPasswordFormValues = z.infer<ReturnType<typeof getResetPasswordFormSchema>>
 
-  const validatePassword = z.string().refine((val) => val === "" || val.length >= 8, {
-    message: "Password must be 8+ characters if provided"
-  })
-  
-  export const SettingsValidation = z
-  .object({
-    name: z.optional(z.string()),
-    email: z.optional(z.string().email("Invalid email")),
-    password: z.optional(validatePassword),
-    newPassword: z.optional(validatePassword),
-    role: z.enum([UserRole.ADMIN, UserRole.USER]),
-    isTwoFactorEnabled: z.optional(z.boolean())
-  })
-  .refine((data) => {
-    if (data.newPassword && !data.password) {
-      return false
-    }
-    return true
-  }, {
-    path: ["password"],
-    message: "To change password, enter current one.",
-  })
-  .refine((data) => {
-    if (data.password && !data.newPassword) {
-      return false
-    }
-    return true
-  }, {
-    path: ["newPassword"],
-    message: "To change password, enter new password.",
-  })
+export function getNewPasswordFormSchema(t?: (key: string) => string) {
+  return z
+    .object({
+      newPassword: z
+        .string()
+        .min(1, t?.("newPassword.required") || "Password is required")
+        .min(8, t?.("newPassword.invalid") || "Password must be 8+ characters"),
+      confirmPassword: z
+        .string()
+        .min(1, t?.("confirmPassword.required") || "Password confirmation is required")
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      path: ["confirmPassword"],
+      message: t?.("confirmPassword.invalid") || "Passwords do not match"
+    })
+}
+export type NewPasswordFormValues = z.infer<ReturnType<typeof getNewPasswordFormSchema>>
+
+const validatePassword = (t?: (key: string) => string) =>
+  z
+    .string()
+    .refine((val) => val === "" || val.length >= 8, {
+      message: t?.("password.invalid") || "Password must be 8+ characters if provided"
+    })
+
+export function getSettingsFormSchema(t?: (key: string) => string) {
+  return z
+    .object({
+      name: z.optional(z.string()),
+      email: z.optional(
+        z.string().email(t?.("email.invalid") || "Invalid email")
+      ),
+      password: z.optional(validatePassword(t)),
+      newPassword: z.optional(validatePassword(t)),
+      role: z.enum([UserRole.ADMIN, UserRole.USER]),
+      isTwoFactorEnabled: z.optional(z.boolean())
+    })
+    .refine(
+      (data) => !(data.newPassword && !data.password),
+      {
+        path: ["password"],
+        message:
+          t?.("password.required") ||
+          "To change password, enter current one."
+      }
+    )
+    .refine(
+      (data) => !(data.password && !data.newPassword),
+      {
+        path: ["newPassword"],
+        message:
+          t?.("newPassword.required") ||
+          "To change password, enter new password."
+      }
+    )
+}
+export type SettingsFormValues = z.infer<ReturnType<typeof getSettingsFormSchema>>

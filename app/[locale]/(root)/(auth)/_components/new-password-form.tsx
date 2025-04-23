@@ -2,10 +2,13 @@
 
 import { useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
+import { useTranslations } from "next-intl"
 import { useSearchParams } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { NewPasswordValidation } from "@/lib/validations/auth"
+import {
+  NewPasswordFormValues,
+  getNewPasswordFormSchema
+} from "@/lib/validations/auth"
 import { newPassword } from "@/lib/actions/auth/new-password"
 
 import { Button } from "@/components/ui/button"
@@ -30,15 +33,19 @@ export const NewPasswordForm = () => {
   const [success, setSuccess] = useState<string | undefined>("")
   const [isPending, startTransition] = useTransition()
 
-  const form = useForm<z.infer<typeof NewPasswordValidation>>({
-    resolver: zodResolver(NewPasswordValidation),
+  const tUi = useTranslations("NewPasswordForm.ui")
+  const tValidation = useTranslations("NewPasswordForm.validation")
+  const tError = useTranslations("Common.error")
+
+  const form = useForm<NewPasswordFormValues>({
+    resolver: zodResolver(getNewPasswordFormSchema(tValidation)),
     defaultValues: {
       newPassword: "",
       confirmPassword: ""
     }
   })
 
-  async function onSubmit(values: z.infer<typeof NewPasswordValidation>) {
+  async function onSubmit(values: NewPasswordFormValues) {
     // console.log(values)
     setError("")
     setSuccess("")
@@ -52,14 +59,14 @@ export const NewPasswordForm = () => {
             setSuccess(data.success)
           }
         })
-        .catch(() => setError("Something went wrong"))
+        .catch(() => setError(tError("generic")))
     })
   }
 
   return (
     <FormWrapper
-      headerLabel="Enter a new password"
-      backButtonLabel="Back to sign in"
+      headerLabel={tUi("header")}
+      backButtonLabel={tUi("backButton")}
       backButtonHref="/signin"
     >
       <Form {...form}>
@@ -70,12 +77,13 @@ export const NewPasswordForm = () => {
               name="newPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New password</FormLabel>
+                  <FormLabel>{tUi("newPassword")}</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isPending}
                       type="password"
-                      placeholder="new password"
+                      placeholder={tUi("newPassword")}
+                      autoComplete="new-password"
                       {...field}
                     />
                   </FormControl>
@@ -88,12 +96,13 @@ export const NewPasswordForm = () => {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm password</FormLabel>
+                  <FormLabel>{tUi("confirmPassword")}</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isPending}
                       type="password"
-                      placeholder="confirm password"
+                      placeholder={tUi("confirmPassword")}
+                      autoComplete="new-password"
                       {...field}
                     />
                   </FormControl>
@@ -110,7 +119,7 @@ export const NewPasswordForm = () => {
             type="submit"
             disabled={isPending}
           >
-            {isPending ? "Submitting..." : "Reset password"}
+            {isPending ? tUi("submitting") : tUi("submit")}
           </Button>
         </form>
       </Form>

@@ -2,11 +2,14 @@
 
 import { useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
+import { useTranslations } from "next-intl"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
 import { useSession } from "next-auth/react"
 import { UserRole, UserProvider } from "@/lib/models/types"
-import { SettingsValidation } from "@/lib/validations/auth"
+import {
+  SettingsFormValues,
+  getSettingsFormSchema
+} from "@/lib/validations/auth"
 import { settings } from "@/lib/actions/auth/settings"
 
 import {
@@ -24,17 +27,11 @@ import {
   FormDescription,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { FormError } from "@/components/shared/form/form-error"
 import { FormSuccess } from "@/components/shared/form/form-success"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export const SettingsForm = () => {
   const { data: session, status, update } = useSession({ required: true })
@@ -45,8 +42,12 @@ export const SettingsForm = () => {
   const [success, setSuccess] = useState<string | undefined>("")
   const [isPending, startTransition] = useTransition()
 
-  const form = useForm<z.infer<typeof SettingsValidation>>({
-    resolver: zodResolver(SettingsValidation),
+  const tUi = useTranslations("SettingsForm.ui")
+  const tValidation = useTranslations("SettingsForm.validation")
+  const tError = useTranslations("Common.error")
+
+  const form = useForm<SettingsFormValues>({
+    resolver: zodResolver(getSettingsFormSchema(tValidation)),
     defaultValues: {
       name: user?.name || "",
       email: user?.email || "",
@@ -57,7 +58,7 @@ export const SettingsForm = () => {
     }
   })
 
-  async function onSubmit(values: z.infer<typeof SettingsValidation>) {
+  async function onSubmit(values: SettingsFormValues) {
     // console.log(values)
     setError("")
     setSuccess("")
@@ -72,19 +73,19 @@ export const SettingsForm = () => {
             setSuccess(data.success)
           }
         })
-        .catch(() => setError("Something went wrong"))
+        .catch(() => setError(tError("generic")))
     })
   }
 
   if (status === "loading") {
-    return <div>Loading...</div>
+    return <SettingsForm.Skeleton />
   }
 
   return (
     <Card className="w-[350px]">
       <CardHeader>
         <p className="text-2xl font-semibold text-center">
-          Settings
+          {tUi("header")}
         </p>
       </CardHeader>
       <CardContent>
@@ -96,11 +97,12 @@ export const SettingsForm = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>{tUi("name")}</FormLabel>
                     <FormControl>
                       <Input
                         disabled={isPending}
-                        placeholder="your username on the web"
+                        placeholder={tUi("name")}
+                        autoComplete="username"
                         {...field}
                       />
                     </FormControl>
@@ -113,11 +115,12 @@ export const SettingsForm = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{tUi("email")}</FormLabel>
                     <FormControl>
                       <Input
                         disabled={isPending || user?.provider !== UserProvider.CREDENTIALS}
                         placeholder="mail@example.com"
+                        autoComplete="email"
                         {...field}
                       />
                     </FormControl>
@@ -132,12 +135,13 @@ export const SettingsForm = () => {
                     name="password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>{tUi("password")}</FormLabel>
                         <FormControl>
                           <Input
                             disabled={isPending}
                             type="password"
-                            placeholder="your password"
+                            placeholder={tUi("password")}
+                            autoComplete="current-password"
                             {...field}
                           />
                         </FormControl>
@@ -150,12 +154,13 @@ export const SettingsForm = () => {
                     name="newPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>New password</FormLabel>
+                        <FormLabel>{tUi("newPassword")}</FormLabel>
                         <FormControl>
                           <Input
                             disabled={isPending}
                             type="password"
-                            placeholder="new password"
+                            placeholder={tUi("newPassword")}
+                            autoComplete="new-password"
                             {...field}
                           />
                         </FormControl>
@@ -165,35 +170,6 @@ export const SettingsForm = () => {
                   />
                 </>
               )}
-              {/* <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <Select
-                      disabled={isPending}
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value={UserRole.ADMIN}>
-                          Admin
-                        </SelectItem>
-                        <SelectItem value={UserRole.USER}>
-                          User
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
               {user?.provider === UserProvider.CREDENTIALS && (
                 <FormField
                 control={form.control}
@@ -201,9 +177,9 @@ export const SettingsForm = () => {
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                     <div className="space-y-0.5">
-                      <FormLabel>Two Factor Authentication</FormLabel>
+                      <FormLabel>{tUi("isTwoFactorEnabled")}</FormLabel>
                       <FormDescription>
-                        Enable two factor authentication
+                        {tUi("isTwoFactorEnabledDescription")}
                       </FormDescription>
                     </div>
                     <FormControl>
@@ -226,10 +202,28 @@ export const SettingsForm = () => {
               type="submit"
               disabled={isPending}
             >
-              {isPending ? "Saving..." : "Save"}
+              {isPending ? tUi("submitting") : tUi("submit")}
             </Button>
           </form>
         </Form>
+      </CardContent>
+    </Card>
+  )
+}
+
+SettingsForm.Skeleton = function SkeletonSettingsForm() {
+  return (
+    <Card className="w-[350px]">
+      <CardHeader>
+        <Skeleton className="h-10 w-1/2 mx-auto my-2" />
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-6 my-6">
+          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-8 w-full" />
+        </div>
       </CardContent>
     </Card>
   )

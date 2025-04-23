@@ -1,28 +1,30 @@
 "use server"
 
-import { z } from "zod"
 import bcrypt from "bcryptjs"
+import { getTranslations } from "next-intl/server"
 
 import { currentUser } from "@/lib/session"
 import connectDB from "@/lib/db"
 import { User } from "@/lib/models/auth.model"
 import { UserProvider } from "@/lib/models/types"
-import { SettingsValidation } from "@/lib/validations/auth"
+import { SettingsFormValues } from "@/lib/validations/auth"
 import { generateToken } from "@/lib/jwt-token"
 // import { generateVerificationToken } from "@/lib/token"
 import { sendVerificationEmail } from "@/lib/mailer"
 // import { sendVerificationEmail } from "@/lib/mail"
+import { cleanEmptyStrings } from "@/lib/utils"
 
-type SettingsInput = z.infer<typeof SettingsValidation> & {
-  [key: string]: any
-}
+export const settings = async (
+  values: SettingsFormValues
+) => {
+  const t = await getTranslations("SettingsForm.server")
+  const tError = await getTranslations("Common.error")
 
-export const settings = async (values: SettingsInput) => {
   const user = await currentUser()
   // console.log({user})
 
   if (!user) {
-    return { error: "Unauthorized" }
+    return { error: tError("unauthorized") }
   }
 
   await connectDB()
@@ -31,7 +33,7 @@ export const settings = async (values: SettingsInput) => {
   // console.log({existingUser})
 
   if (!existingUser) {
-    return { error: "Unauthorized" }
+    return { error: tError("unauthorized") }
   }
 
   if (user.provider !== UserProvider.CREDENTIALS) {
@@ -45,7 +47,7 @@ export const settings = async (values: SettingsInput) => {
     const dbUser = await User.findOne({email: values.email})
 
     if (dbUser && dbUser._id !== user._id) {
-      return { error: "Email already in use!" }
+      return { error: t("error.emailInUse") }
     }
 
     const verificationToken = await generateToken({email:values.email})
@@ -68,7 +70,7 @@ export const settings = async (values: SettingsInput) => {
       emailVerified: null
     })
     
-    return { success: "Verification email sent!" }
+    return { success: t("success.verificationSent") }
   }
 
   if (values.password && values.newPassword && existingUser.password) {
@@ -78,7 +80,7 @@ export const settings = async (values: SettingsInput) => {
     )
 
     if (!passwordsMatch) {
-      return { error: "Incorrect password!" }
+      return { error: t("error.incorrectPassword") }
     }
 
     const salt = await bcrypt.genSalt(10)
@@ -88,18 +90,9 @@ export const settings = async (values: SettingsInput) => {
     values.newPassword = undefined
   }
 
-  for (const key in values) {
-    if (values[key] === "") {
-      values[key] = undefined
-    }
-  }
+  const cleanedValues = cleanEmptyStrings(values)
 
-  // console.log({values})
+  await User.findByIdAndUpdate(user._id, cleanedValues)
 
-  await User.findByIdAndUpdate(
-    user._id,
-    { ...values }
-  )
-
-  return { success: "Settings Updated!" }
+  return { success: t("success.settingsUpdated") }
 }

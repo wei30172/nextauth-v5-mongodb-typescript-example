@@ -4,7 +4,7 @@ import Credentials from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
 
 import { UserRole, UserProvider } from "@/lib/models/types"
-import { SignInValidation } from "@/lib/validations/auth"
+import { getSignInFormSchema } from "@/lib/validations/auth"
 import { fetchUserByEmail, fetchUserById, signInWithOauth } from "@/lib/api-handler/user"
 import { fetchConfirmationByUserId, deleteConfirmationById } from "@/lib/api-handler/twofac"
 
@@ -22,12 +22,12 @@ export default {
     }),
     Credentials({
       async authorize(credentials) {
-        const validatedFields = SignInValidation.safeParse(credentials)
+        const validatedFields = getSignInFormSchema().safeParse(credentials)
 
         if (validatedFields.success) {
           const { email, password } = validatedFields.data
 
-          let existingUser = await fetchUserByEmail(email)
+          const existingUser = await fetchUserByEmail(email)
           // console.log({existingUser})
 
           if (!existingUser || !existingUser.password) return null

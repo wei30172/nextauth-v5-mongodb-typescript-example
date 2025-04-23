@@ -2,9 +2,12 @@
 
 import { useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
+import { useTranslations } from "next-intl"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { ResetPasswordValidation } from "@/lib/validations/auth"
+import {
+  ResetPasswordFormValues,
+  getResetPasswordFormSchema
+} from "@/lib/validations/auth"
 import { resetPassword } from "@/lib/actions/auth/reset-password"
 
 import { Button } from "@/components/ui/button"
@@ -26,14 +29,18 @@ export const ResetForm = () => {
   const [success, setSuccess] = useState<string | undefined>("")
   const [isPending, startTransition] = useTransition()
 
-  const form = useForm<z.infer<typeof ResetPasswordValidation>>({
-    resolver: zodResolver(ResetPasswordValidation),
+  const tUi = useTranslations("ResetForm.ui")
+  const tValidation = useTranslations("ResetForm.validation")
+  const tError = useTranslations("Common.error")
+
+  const form = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(getResetPasswordFormSchema(tValidation)),
     defaultValues: {
       email: ""
     }
   })
 
-  async function onSubmit(values: z.infer<typeof ResetPasswordValidation>) {
+  async function onSubmit(values: ResetPasswordFormValues) {
     // console.log(values)
     setError("")
     setSuccess("")
@@ -47,14 +54,14 @@ export const ResetForm = () => {
             setSuccess(data.success)
           }
         })
-        .catch(() => setError("Something went wrong"))
+        .catch(() => setError(tError("generic")))
     })
   }
 
   return (
     <FormWrapper
-      headerLabel="Forgot your password?"
-      backButtonLabel="Back to sign in"
+      headerLabel={tUi("header")}
+      backButtonLabel={tUi("backButton")}
       backButtonHref="/signin"
     >
       <Form {...form}>
@@ -65,11 +72,12 @@ export const ResetForm = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{tUi("email")}</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isPending}
                       placeholder="mail@example.com"
+                      autoComplete="email"
                       {...field}
                     />
                   </FormControl>
@@ -86,7 +94,7 @@ export const ResetForm = () => {
             type="submit"
             disabled={isPending}
           >
-            {isPending ? "Sending..." : "Send reset email"}
+            {isPending ? tUi("submitting") : tUi("submit")}
           </Button>
         </form>
       </Form>

@@ -3,20 +3,15 @@ import { twMerge } from "tailwind-merge"
 
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs))
 
-export const fetcher = async (url: string, options: RequestInit = {}): Promise<any> => {
-  const headers = {
-    "Content-Type": "application/json",
-    ...options.headers
+export const cleanEmptyStrings = <T extends Record<string, any>>(obj: T): T => {
+  const result = { ...obj }
+
+  for (const key of Object.keys(result) as (keyof T)[]) {
+    const value = result[key]
+    if (typeof value === "string" && value.trim() === "") {
+      result[key] = undefined as any
+    }
   }
 
-  const response = await fetch(url, {
-    ...options,
-    headers
-  })
-
-  try {
-    return await response.json()
-  } catch (error) {
-    return null
-  }
+  return result
 }

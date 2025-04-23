@@ -46,5 +46,200 @@
         "terms": "Conditions of Use"
       }
     }
+  },
+  "ErrorCard": {
+    "ui": {
+      "header": "Oops! Something went wrong!",
+      "backButton": "Back to sign in"
+    }
+  },
+  "SignInForm": {
+    "ui": {
+      "header": "Welcome back",
+      "backButton": "Don't have an account?",
+      "resetLink": "Forgot password?",
+      "code": "Two Factor Code",
+      "email": "Email",
+      "password": "Password",
+      "submitting": "Submitting...",
+      "confirm": "Confirm",
+      "submit": "Sign In"
+    },
+    "validation": {
+      "email": {
+        "required": "Email is required",
+        "invalid": "Invalid email"
+      },
+      "password": {
+        "required": "Password is required",
+        "invalid": "Password must be 8+ characters"
+      }
+    },
+    "server": {
+      "success": {
+        "confirmationSent": "A confirmation email has been sent."
+      },
+      "error": {
+        "emailNotFound": "This email is not registered.",
+        "invalidCode": "Invalid verification code.",
+        "codeExpired": "The verification code has expired.",
+        "invalidCredentials": "Incorrect email or password."
+      }
+    }
+  },
+  "SignUpForm": {
+    "ui": {
+      "header": "Create an account",
+      "backButton": "Already have an account?",
+      "name": "Username",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "submitting": "Submitting...",
+      "submit": "Sign Up"
+    },
+    "validation": {
+      "name": {
+        "required": "Username is required",
+        "invalid": "Username must be less than 50 characters"
+      },
+      "email": {
+        "required": "Email is required",
+        "invalid": "Invalid email"
+      },
+      "password": {
+        "required": "Password is required",
+        "invalid": "Password must be 8+ characters"
+      },
+      "confirmPassword": {
+        "required": "Password confirmation is required",
+        "invalid": "Password do not match"
+      }
+    },
+    "server": {
+      "success": {
+        "confirmationSent": "A confirmation email has been sent."
+      },
+      "error": {
+        "emailExists": "This email is already registered.",
+        "emailThirdParty": "This email has already been used for third-party login."
+      }
+    }
+  },
+  "ResetForm": {
+    "ui": {
+      "header": "Forgot your password?",
+      "backButton": "Back to sign in",
+      "email": "Email",
+      "submitting": "Sending...",
+      "submit": "Send reset email"
+    },
+    "validation": {
+      "email": {
+        "required": "Email is required",
+        "invalid": "Invalid email"
+      }
+    },
+    "server": {
+      "success": {
+        "resetSent": "Reset email sent."
+      },
+      "error": {
+        "emailNotFound": "This email is not registered.",
+        "emailThirdParty": "This email has already been used for third-party login."
+      }
+    }
+  },
+  "NewPasswordForm": {
+    "ui": {
+      "header": "Reset your password",
+      "backButton": "Back to sign in",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "submitting": "Resetting...",
+      "submit": "Reset Password"
+    },
+    "validation": {
+      "newPassword": {
+        "required": "Password is required",
+        "invalid": "Password must be 8+ characters"
+      },
+      "confirmPassword": {
+        "required": "Password confirmation is required",
+        "invalid": "Passwords do not match"
+      }
+    },
+    "server": {
+      "success": {
+        "passwordUpdated": "Password updated successfully."
+      },
+      "error": {
+        "emailNotFound": "This email is not registered.",
+        "emailThirdParty": "This email has already been used for third-party login."
+      }
+    }
+  },
+  "SettingsForm": {
+    "ui": {
+      "header": "Account Settings",
+      "name": "Username",
+      "email": "Email",
+      "password": "Current Password",
+      "newPassword": "New Password",
+      "isTwoFactorEnabled": "Two Factor Authentication",
+      "isTwoFactorEnabledDescription": "Enable two factor authentication",
+      "submitting": "Saving...",
+      "submit": "Save Changes"
+    },
+    "validation": {
+      "email": {
+        "invalid": "Invalid email"
+      },
+      "password": {
+        "required": "To change password, enter current one.",
+        "invalid": "Password must be 8+ characters if provided"
+      },
+      "newPassword": {
+        "required": "To change password, enter new password.",
+        "invalid": "Password must be 8+ characters if provided"
+      }
+    },
+    "server": {
+      "success": {
+        "verificationSent": "Verification email sent.",
+        "settingsUpdated": "Settings updated successfully."
+      },
+      "error": {
+        "emailInUse": "This email is already in use.",
+        "incorrectPassword": "Incorrect password."
+      }
+    }
+  },
+  "NewVerificationForm": {
+    "ui": {
+      "header": "Confirming your email verification",
+      "backButton": "Back to sign in"
+    },
+    "server": {
+      "success": {
+        "emailUpdated": "Your email has been updated and verified.",
+        "emailVerified": "Your email has been verified successfully."
+      },
+      "error": {
+        "emailNotFound": "This email is not registered.",
+        "invalidRequest": "Invalid verification request."
+      }
+    }
+  },
+  "Common": {
+    "error": {
+      "missingToken": "Missing token.",
+      "tokenExpired": "The token has expired.",
+      "tokenInvalid": "The token is invalid.",
+      "unauthorized": "You are not authorized to perform this action.",
+      "invalidFields": "One or more fields are invalid.",
+      "actionFailed": "The action could not be completed. Please try again.",
+      "generic": "Something went wrong. Please try again later."
+    }
   }
 }

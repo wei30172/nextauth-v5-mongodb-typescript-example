@@ -1,35 +1,41 @@
 "use server"
 
-import { z } from "zod"
 import bcrypt from "bcryptjs"
+import { getTranslations } from "next-intl/server"
 
 import connectDB from "@/lib/db"
 import { User } from "@/lib/models/auth.model"
 import { UserProvider } from "@/lib/models/types"
-import { SignUpValidation } from "@/lib/validations/auth"
+import { 
+  SignUpFormValues,
+  getSignUpFormSchema
+ } from "@/lib/validations/auth"
 import { generateToken } from "@/lib/jwt-token"
 // import { generateVerificationToken } from "@/lib/token"
 import { sendVerificationEmail } from "@/lib/mailer"
 // import { sendVerificationEmail } from "@/lib/mail"
 
-type SignUpWithCredentialsInput = z.infer<typeof SignUpValidation>
-
-export const signUpWithCredentials = async (values: SignUpWithCredentialsInput) => {
-  const validatedFields = SignUpValidation.safeParse(values)
+export const signUpWithCredentials = async (
+  values: SignUpFormValues
+) => {
+  const t = await getTranslations("SignUpForm.server")
+  const tError = await getTranslations("Common.error")
+  
+  const validatedFields = getSignUpFormSchema().safeParse(values)
 
   if (!validatedFields.success) {
-    return { error: "Invalid fields!" }
+    return { error: tError("invalidFields") }
   }
   
   const { email, password, name } = validatedFields.data
 
   await connectDB()
-
+  
   const existingUser = await User.findOne({email})
   if (existingUser) {
     const error = existingUser.provider === UserProvider.CREDENTIALS 
-      ? "Email already exists" 
-      : "Email has already been used for third-party login"
+      ? t("error.emailExists")
+      : t("error.emailThirdParty")
     return { error }
   }
   
@@ -39,7 +45,7 @@ export const signUpWithCredentials = async (values: SignUpWithCredentialsInput) 
   const user = new User({ name, email, password: hashedPassword })
   await user.save()
 
-  const verificationToken = await  generateToken({email})
+  const verificationToken = await generateToken({email})
   // console.log({verificationToken})
 
   await sendVerificationEmail(
@@ -54,5 +60,5 @@ export const signUpWithCredentials = async (values: SignUpWithCredentialsInput) 
   //   verificationToken.token
   // )
   
-  return { success: "Confirmation email sent!" }
+  return { success: t("success.confirmationSent") }
 }

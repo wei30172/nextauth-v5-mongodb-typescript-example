@@ -1,5 +1,5 @@
 import { Account, Profile } from "next-auth"
-import { fetcher } from "@/lib/utils"
+import { fetcher } from "@/lib/fetcher"
 
 export const fetchUserByEmail = async (email: string) => {
   try {
