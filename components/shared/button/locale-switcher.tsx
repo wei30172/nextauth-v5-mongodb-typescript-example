@@ -1,7 +1,8 @@
 "use client"
 
-import { IoIosGlobe } from "react-icons/io"
 import { useLocale } from "next-intl"
+
+import { IoIosGlobe } from "react-icons/io"
 import LocaleSelect from "./locale-select"
 
 export const LocaleSwitcher = () => {
