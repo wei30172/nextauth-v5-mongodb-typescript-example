@@ -11,7 +11,6 @@ const baseMiddleware = chain(withAuthMiddleware, withIntlMiddleware)
 // Use NextAuth to generate auth middleware wrapper
 const { auth: withAuthWrapper } = NextAuth(authConfig)
 
-
 const middleware = withAuthWrapper(async (req: NextRequest) => {
   const res = NextResponse.next()
   const event = {} as NextFetchEvent

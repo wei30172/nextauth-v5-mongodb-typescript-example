@@ -23,7 +23,6 @@ export const withAuthMiddleware: Middleware = async (req, _event, _res) => {
   
   const isPublic = routes.public.includes(pathname)
   const isAuthRoute = routes.auth.includes(pathname)
-  const isHome = pathname === "/"
   const defaultRedirect = new URL(routes.defaultLoginRedirect, nextUrl)
 
   // Already logged in → redirect away from /signin, /signup
