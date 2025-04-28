@@ -1,6 +1,6 @@
 "use client"
 
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
 import { useCurrentUser } from "@/hooks/use-session"

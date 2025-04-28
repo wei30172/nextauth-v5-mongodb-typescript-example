@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 
 import { SiAuth0 } from "react-icons/si"
 import { MainNav } from "@/components/shared/main-nav"

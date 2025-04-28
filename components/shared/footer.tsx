@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl"
-import Link from "next/link"
+import { Link } from "@/i18n/routing"
 import { footerLinks } from "@/constants"
 
 import { SiAuth0 } from "react-icons/si"

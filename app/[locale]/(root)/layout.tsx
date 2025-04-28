@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
-import { notFound } from "next/navigation";
+import { NextIntlClientProvider } from "next-intl"
+import { getMessages } from "next-intl/server"
+import { notFound } from "next/navigation"
 import { Inter } from "next/font/google"
 import { SessionProvider } from "next-auth/react"
 import { Locale, routing } from "@/i18n/routing"
