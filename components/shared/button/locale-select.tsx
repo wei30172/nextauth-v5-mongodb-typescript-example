@@ -40,7 +40,7 @@ export default function LocaleSelect({ value, label }: {
   return (
     <Select value={value} onValueChange={onSelectChange}>
       <SelectTrigger
-        className="focus:ring-0 focus:ring-offset-0"
+        className="w-[120px] focus:ring-0 focus:ring-offset-0"
         aria-label={label}
         title={label}
       >
