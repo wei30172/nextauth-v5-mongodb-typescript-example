@@ -241,5 +241,28 @@
       "actionFailed": "操作失敗，請稍後再試一次。",
       "generic": "發生錯誤，請稍後重試。"
     }
+  },
+  "Email": {
+    "verification": {
+      "subject": "請確認您的電子郵件",
+      "title": "電子郵件確認",
+      "description": "請點選下方連結以驗證您的電子郵件：",
+      "button": "點此確認電子郵件",
+      "ignoreNote": "如果您未申請此操作，請忽略此信件。"
+    },
+    "reset": {
+      "subject": "重設您的密碼",
+      "title": "密碼重設",
+      "description": "請點選下方連結以重設您的密碼：",
+      "button": "點此重設密碼",
+      "ignoreNote": "如果您未申請此操作，請忽略此信件。"
+    },
+    "2fa": {
+      "subject": "您的二階段驗證碼",
+      "title": "二階段驗證",
+      "description": "您的驗證碼如下：",
+      "loginNote": "請使用此驗證碼完成登入。",
+      "securityNote": "為了您的帳戶安全，請勿與任何人分享驗證碼。"
+    }
   }
 }

@@ -10,7 +10,7 @@ import {
   getResetPasswordFormSchema
 } from "@/lib/validations/auth"
 import { generateToken } from "@/lib/token"
-import { sendPasswordResetEmail } from "@/lib/mail"
+import { sendPasswordResetEmail } from "@/lib/mail/nodemailer"
 
 export const resetPassword = async (
   values: ResetPasswordFormValues

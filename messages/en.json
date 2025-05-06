@@ -241,5 +241,28 @@
       "actionFailed": "The action could not be completed. Please try again.",
       "generic": "Something went wrong. Please try again later."
     }
+  },
+  "Email": {
+    "verification": {
+      "subject": "Confirm your email",
+      "title": "Email Confirmation",
+      "description": "Please click the link below to confirm your email address:",
+      "button": "Click here to confirm email",
+      "ignoreNote": "If you did not request this email, please ignore it."
+    },
+    "reset": {
+      "subject": "Reset your password",
+      "title": "Password Reset",
+      "description": "Please click the link below to reset your password:",
+      "button": "Click here to reset password",
+      "ignoreNote": "If you did not request this email, please ignore it."
+    },
+    "2fa": {
+      "subject": "Your Two-Factor Authentication Code",
+      "title": "Two-Factor Authentication",
+      "description": "Your 2FA code is:",
+      "loginNote": "Please use this code to complete your login.",
+      "securityNote": "For your security, never share this code with anyone."
+    }
   }
 }

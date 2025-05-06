@@ -9,7 +9,7 @@ import { User } from "@/lib/database/models/auth.model"
 import { UserProvider } from "@/lib/database/models/types"
 import { SettingsFormValues } from "@/lib/validations/auth"
 import { generateToken } from "@/lib/token"
-import { sendVerificationEmail } from "@/lib/mail"
+import { sendVerificationEmail } from "@/lib/mail/nodemailer"
 import { cleanEmptyStrings } from "@/lib/utils"
 
 export const settings = async (

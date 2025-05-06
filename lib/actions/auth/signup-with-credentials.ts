@@ -11,7 +11,7 @@ import {
   getSignUpFormSchema
  } from "@/lib/validations/auth"
 import { generateToken } from "@/lib/token"
-import { sendVerificationEmail } from "@/lib/mail"
+import { sendVerificationEmail } from "@/lib/mail/nodemailer"
 
 export const signUpWithCredentials = async (
   values: SignUpFormValues
