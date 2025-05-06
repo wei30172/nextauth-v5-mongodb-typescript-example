@@ -1,5 +1,3 @@
-import { Document } from "mongoose"
-
 export enum UserRole {
   ADMIN = "admin",
   USER = "user"
@@ -11,7 +9,8 @@ export enum UserProvider {
 }
 
 
-export interface IUser extends Document {
+export interface IUser {
+  _id: string
   name: string
   email: string
   password?: string
@@ -23,4 +22,9 @@ export interface IUser extends Document {
   emailPendingVerification?: string
   createdAt: Date
   updatedAt: Date
+}
+
+export interface TwoFactorConfirmation {
+  _id: string
+  userId: string
 }

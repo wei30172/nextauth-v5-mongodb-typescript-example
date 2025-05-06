@@ -3,11 +3,10 @@
 import bcrypt from "bcryptjs"
 import { getTranslations } from "next-intl/server"
 
-import connectDB from "@/lib/db"
-import { verifyToken, isTokenError } from "@/lib/jwt-token"
-import { User } from "@/lib/models/auth.model"
-// import { User, PasswordResetToken } from "@/lib/models/auth.model"
-import { UserProvider } from "@/lib/models/types"
+import connectDB from "@/lib/database/db"
+import { verifyToken, isTokenError } from "@/lib/token"
+import { User } from "@/lib/database/models/auth.model"
+import { UserProvider } from "@/lib/database/models/types"
 import {
   NewPasswordFormValues,
   getNewPasswordFormSchema
@@ -59,35 +58,4 @@ export const newPassword = async (
   )
 
   return { success: t("success.passwordUpdated") }
-
-  // await connectDB()
-  
-  // const existingToken = await PasswordResetToken.findOne({token})
-
-  // if (!existingToken) {
-  //   return { error: "Invalid token!" }
-  // }
-
-  // const hasExpired = new Date(existingToken.expires) < new Date()
-
-  // if (hasExpired) {
-  //   return { error: "Token has expired!" }
-  // }
-
-  // const existingUser =await User.findOne({email: existingToken.email})
-
-  // if (!existingUser) {
-  //   return { error: "Email does not exist!" }
-  // }
-
-  // const salt = await bcrypt.genSalt(10)
-  // const hashedPassword = await bcrypt.hash(newPassword, salt)
-  
-  // await User.findByIdAndUpdate(existingUser._id,
-  //   { password: hashedPassword }
-  // )
-
-  // await PasswordResetToken.findByIdAndDelete(existingToken._id)
-
-  // return { success: "Password updated!" }
 }

@@ -1,54 +1,45 @@
-import { v4 as uuidv4 } from "uuid"
+import jwt, { JwtPayload, TokenExpiredError } from "jsonwebtoken"
 import crypto from "crypto"
 
-import connectDB from "@/lib/db"
-import { VerificationToken, PasswordResetToken, TwoFactorToken } from "@/lib/models/auth.model"
+import connectDB from "@/lib/database/db"
+import { TwoFactorToken } from "@/lib/database/models/auth.model"
 
-export const generateVerificationToken = async (email: string) => {
-  const token = uuidv4()
-  const expires = new Date(new Date().getTime() + 60 * 60 * 1000) // 1 hour
-
-  await connectDB()
-
-  await VerificationToken.deleteOne({ email })
-
-  const verificationToken = new VerificationToken({
-    email,
-    token,
-    expires
-  })
-
-  await verificationToken.save()
-
-  return { ...verificationToken._doc, _id: verificationToken._id.toString() }
+export interface IPayload extends JwtPayload {
+  email: string
 }
 
-export const generatePasswordResetToken = async (email: string) => {
-  const token = uuidv4()
-  const expires = new Date(new Date().getTime() + 60 * 60 * 1000) // 1 hour
-
-  await connectDB()
-
-  await PasswordResetToken.deleteOne({ email })
-
-  const passwordResetToken = new PasswordResetToken({
-    email,
-    token,
-    expires
-  })
-
-  await passwordResetToken.save()
-
-  return { ...passwordResetToken._doc, _id: passwordResetToken._id.toString() }
+export interface IError {
+  error: string
 }
 
-export const generateTwoFactorToken = async (email: string) => {
+export const isTokenError = (res: IPayload | IError): res is IError => {
+  return (res as IError).error !== undefined
+}
+
+export const generateToken = async (payload: { email: string }, expiresIn: string = "1h") => {
+  return jwt.sign(payload, process.env.TOKEN_SECRET!,{ expiresIn }) // jwt.io
+}
+
+export const verifyToken = async (token: string): Promise<IPayload | IError> => {
+  try {
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET!) as IPayload
+    return decoded
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      return { error: "tokenExpired" }
+    } else {
+      return { error: "tokenInvalid" }
+    }
+  }
+}
+
+export const generateCode = async (email: string) => {
   const token = crypto.randomInt(100000, 1000000).toString() // generate a six-digit random number
   // console.log({token})
   const expires = new Date(new Date().getTime() + 5 * 60 * 1000) // 5 mins
 
   await connectDB()
-  
+
   await TwoFactorToken.deleteOne({ email })
 
   const twoFactorToken = new TwoFactorToken({
@@ -59,5 +50,5 @@ export const generateTwoFactorToken = async (email: string) => {
 
   await twoFactorToken.save()
 
-  return { ...twoFactorToken._doc, _id: twoFactorToken._id.toString() }
+  return token
 }

@@ -4,14 +4,12 @@ import bcrypt from "bcryptjs"
 import { getTranslations } from "next-intl/server"
 
 import { currentUser } from "@/lib/session"
-import connectDB from "@/lib/db"
-import { User } from "@/lib/models/auth.model"
-import { UserProvider } from "@/lib/models/types"
+import connectDB from "@/lib/database/db"
+import { User } from "@/lib/database/models/auth.model"
+import { UserProvider } from "@/lib/database/models/types"
 import { SettingsFormValues } from "@/lib/validations/auth"
-import { generateToken } from "@/lib/jwt-token"
-// import { generateVerificationToken } from "@/lib/token"
-import { sendVerificationEmail } from "@/lib/mailer"
-// import { sendVerificationEmail } from "@/lib/mail"
+import { generateToken } from "@/lib/token"
+import { sendVerificationEmail } from "@/lib/mail"
 import { cleanEmptyStrings } from "@/lib/utils"
 
 export const settings = async (
@@ -57,13 +55,6 @@ export const settings = async (
       values.email,
       verificationToken
     )
-
-    // const verificationToken = await generateVerificationToken(values.email)
-
-    // await sendVerificationEmail(
-    //   verificationToken.email,
-    //   verificationToken.token
-    // )
 
     await User.findByIdAndUpdate(user._id, {
       emailPendingVerification: values.email,

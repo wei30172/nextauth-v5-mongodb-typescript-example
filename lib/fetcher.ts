@@ -1,22 +1,64 @@
-export const fetcher = async (url: string, options: RequestInit = {}): Promise<any> => {
+interface FetcherOptions extends RequestInit {
+  baseUrl?: string
+}
+
+export const fetcher = async <T>(
+  endpoint: string,
+  options: FetcherOptions = {}
+): Promise<T> => {
+  const { baseUrl = "", headers: customHeaders, ...restOptions } = options
+
   const headers = {
     "Content-Type": "application/json",
-    ...options.headers
+    ...customHeaders
   }
 
-  const response = await fetch(url, {
-    ...options,
-    headers
-  })
-
-  if (!response.ok) {
-    const errorMessage = await response.text()
-    throw new Error(errorMessage || "An error occurred during the request.")
-  }
-  
   try {
-    return await response.json()
+    const response = await fetch(`${baseUrl}/${endpoint}`, {
+      ...restOptions,
+      headers
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || "An error occurred during the request.")
+    }
+
+    return await response.json() as T
+
   } catch (error) {
-    return null
+    // console.error("Error in fetcher:", error)
+    throw new Error((error as Error).message || "Failed to fetch data.")
   }
+}
+interface InternalApiFetcherProps {
+  endpoint: string
+  options?: RequestInit
+}
+
+export const internalApiFetcher = <T>({
+  endpoint,
+  options
+}: InternalApiFetcherProps) => {
+  return fetcher<T>(endpoint, {
+    ...options,
+    baseUrl: process.env.NEXT_PUBLIC_APP_URL
+  })
+}
+
+interface ExternalApiFetcherProps {
+  apiUrl: string
+  endpoint: string
+  options?: RequestInit
+}
+
+export const externalApiFetcher = <T>({
+  apiUrl,
+  endpoint,
+  options
+}: ExternalApiFetcherProps) => {
+  return fetcher<T>(endpoint, {
+    ...options,
+    baseUrl: apiUrl
+  })
 }

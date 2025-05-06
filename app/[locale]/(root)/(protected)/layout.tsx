@@ -4,7 +4,7 @@ const ProtectedLayout = ({
   children: React.ReactNode
 }) => {
   return ( 
-    <div className="h-full flex fex-col items-center justify-center">
+    <div className="h-full flex flex-col items-center justify-center">
       {children}
     </div>
    )

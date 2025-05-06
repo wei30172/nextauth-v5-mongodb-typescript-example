@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { UserRole } from "@/lib/models/types"
+import { UserRole } from "@/lib/database/models/types"
 
 export function getSignInFormSchema(t?: (key: string) => string) {
   return z

@@ -1,28 +1,30 @@
-import { fetcher } from "@/lib/fetcher"
+import { internalApiFetcher } from "@/lib/fetcher"
+import { TwoFactorConfirmation } from "@/lib/database/models/types"
 
 export const fetchConfirmationByUserId = async (
   userId: string
-) => {
+): Promise<TwoFactorConfirmation | null> => {
   try {
-    const twoFactorConfirmation = await fetcher(`${process.env.NEXT_PUBLIC_APP_URL}/api/twofac/fetch-by-userId`, {
-      method: "POST",
-      body: JSON.stringify({userId})
+    const confirmation = await internalApiFetcher<TwoFactorConfirmation>({
+      endpoint: "api/twofac/fetch-by-userId",
+      options: {
+        method: "POST",
+        body: JSON.stringify({ userId })
+      }
     })
-    // console.log({twoFactorConfirmation})
-    
-    if (twoFactorConfirmation) return twoFactorConfirmation
-
-    return null
+    // console.log({confirmation})
+    return confirmation ?? null
   } catch {
     return null
   }
 }
 
-export const deleteConfirmationById = async (
-  id: string
-) => {
-  await fetcher(`${process.env.NEXT_PUBLIC_APP_URL}/api/twofac/delete-by-id`, {
-    method: "DELETE",
-    body: JSON.stringify({id})
+export const deleteConfirmationById = async (id: string) => {
+  await internalApiFetcher<void>({
+    endpoint: "api/twofac/delete-by-id",
+    options: {
+      method: "DELETE",
+      body: JSON.stringify({ id })
+    }
   })
 }

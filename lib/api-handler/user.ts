@@ -1,49 +1,62 @@
 import { Account, Profile } from "next-auth"
-import { fetcher } from "@/lib/fetcher"
+import { internalApiFetcher } from "@/lib/fetcher"
+import { IUser } from "@/lib/database/models/types"
 
-export const fetchUserByEmail = async (email: string) => {
+export const fetchUserByEmail = async (email: string): Promise<IUser | null> => {
   try {
-    const user = await fetcher(`${process.env.NEXT_PUBLIC_APP_URL}/api/user/fetch-by-email`, {
-      method: "POST",
-      body: JSON.stringify({email})
+    const user = await internalApiFetcher<IUser>({
+      endpoint: "api/user/fetch-by-email",
+      options: {
+        method: "POST",
+        body: JSON.stringify({ email })
+      }
     })
     // console.log({user})
-    
-    if (user) return user
-    
-    return null
+
+    return user ?? null
   } catch {
     return null
   }
 }
 
-export const fetchUserById = async (id: string) => {
+export const fetchUserById = async (id: string): Promise<IUser | null> => {
   try {
-    const user = await fetcher(`${process.env.NEXT_PUBLIC_APP_URL}/api/user/fetch-by-id`, {
-      method: "POST",
-      body: JSON.stringify({id})
+    const user = await internalApiFetcher<IUser>({
+      endpoint: "api/user/fetch-by-id",
+      options: {
+        method: "POST",
+        body: JSON.stringify({ id })
+      }
     })
     // console.log({user})
-
-    if (user) return user
     
-    return null
+    return user ?? null
   } catch {
     return null
   }
 }
 
-type SignInWithOauthInput = {account: Account, profile: Profile & { picture?: string }}
+interface SignInWithOauthParams {
+  account: Account
+  profile: Profile & { picture?: string }
+}
 
-export const signInWithOauth = async (values: SignInWithOauthInput) => {
-  const { account, profile } = values
+export const signInWithOauth = async (params: SignInWithOauthParams): Promise<boolean> => {
+  const { account, profile } = params
   // console.log({account, profile})
 
-  const user = await fetcher(`${process.env.NEXT_PUBLIC_APP_URL}/api/user/signIn-with-oauth`, {
-    method: "POST",
-    body: JSON.stringify({account, profile})
-  })
-  // console.log({user})
+  try {
+    const user = await internalApiFetcher<IUser>({
+      endpoint: "api/user/signIn-with-oauth",
+      options: {
+        method: "POST",
+        body: JSON.stringify({account, profile})
+      }
+    })
+    // console.log({user})
 
-  return !!user
+    return !!user
+  } catch {
+    return false
+  }
 }

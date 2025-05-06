@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { UserRole, UserProvider } from "@/lib/models/types"
+import { UserRole, UserProvider } from "@/lib/database/models/types"
 
 export const userSchema = new mongoose.Schema({
   name: {

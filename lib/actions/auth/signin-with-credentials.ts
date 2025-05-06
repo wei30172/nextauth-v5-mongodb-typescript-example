@@ -5,16 +5,14 @@ import { getTranslations } from "next-intl/server"
 
 import { signIn } from "@/auth"
 import { routes } from "@/routes"
-import connectDB from "@/lib/db"
-import { User, TwoFactorToken, TwoFactorConfirmation } from "@/lib/models/auth.model"
+import connectDB from "@/lib/database/db"
+import { User, TwoFactorToken, TwoFactorConfirmation } from "@/lib/database/models/auth.model"
 import {
   SignInFormValues,
   getSignInFormSchema
 } from "@/lib/validations/auth"
-import { generateToken, generateCode } from "@/lib/jwt-token"
-// import { generateVerificationToken, generateTwoFactorToken } from "@/lib/token"
-import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mailer"
-// import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mail"
+import { generateToken, generateCode } from "@/lib/token"
+import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mail"
 
 export const signInWithCredentials = async (
   values: SignInFormValues,
@@ -49,13 +47,6 @@ export const signInWithCredentials = async (
       existingUser.email,
       verificationToken
     )
-
-    // const verificationToken = await generateVerificationToken(existingUser.email)
-
-    // await sendVerificationEmail(
-    //   verificationToken.email,
-    //   verificationToken.token
-    // )
 
     return { success: t("success.confirmationSent") }
   }
@@ -96,13 +87,6 @@ export const signInWithCredentials = async (
         existingUser.email,
         twoFactorToken
       )
-
-      // const twoFactorToken = await generateTwoFactorToken(existingUser.email)
-
-      // await sendTwoFactorTokenEmail(
-      //   twoFactorToken.email,
-      //   twoFactorToken.token
-      // )
 
       return { twoFactor: true }
     }

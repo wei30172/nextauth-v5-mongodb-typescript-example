@@ -2,17 +2,15 @@
 
 import { getTranslations } from "next-intl/server"
 
-import connectDB from "@/lib/db"
-import { User } from "@/lib/models/auth.model"
-import { UserProvider } from "@/lib/models/types"
+import connectDB from "@/lib/database/db"
+import { User } from "@/lib/database/models/auth.model"
+import { UserProvider } from "@/lib/database/models/types"
 import {
   ResetPasswordFormValues,
   getResetPasswordFormSchema
 } from "@/lib/validations/auth"
-import { generateToken } from "@/lib/jwt-token"
-// import { generatePasswordResetToken } from "@/lib/token"
-import { sendPasswordResetEmail } from "@/lib/mailer"
-// import { sendPasswordResetEmail } from "@/lib/mail"
+import { generateToken } from "@/lib/token"
+import { sendPasswordResetEmail } from "@/lib/mail"
 
 export const resetPassword = async (
   values: ResetPasswordFormValues
@@ -47,13 +45,6 @@ export const resetPassword = async (
     email,
     passwordResetToken
   )
-
-  // const passwordResetToken = await generatePasswordResetToken(email)
-  
-  // await sendPasswordResetEmail(
-  //   passwordResetToken.email,
-  //   passwordResetToken.token
-  // )
 
   return { success: t("success.resetSent") }
 }

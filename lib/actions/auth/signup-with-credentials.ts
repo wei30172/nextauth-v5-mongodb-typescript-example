@@ -3,17 +3,15 @@
 import bcrypt from "bcryptjs"
 import { getTranslations } from "next-intl/server"
 
-import connectDB from "@/lib/db"
-import { User } from "@/lib/models/auth.model"
-import { UserProvider } from "@/lib/models/types"
+import connectDB from "@/lib/database/db"
+import { User } from "@/lib/database/models/auth.model"
+import { UserProvider } from "@/lib/database/models/types"
 import { 
   SignUpFormValues,
   getSignUpFormSchema
  } from "@/lib/validations/auth"
-import { generateToken } from "@/lib/jwt-token"
-// import { generateVerificationToken } from "@/lib/token"
-import { sendVerificationEmail } from "@/lib/mailer"
-// import { sendVerificationEmail } from "@/lib/mail"
+import { generateToken } from "@/lib/token"
+import { sendVerificationEmail } from "@/lib/mail"
 
 export const signUpWithCredentials = async (
   values: SignUpFormValues
@@ -52,13 +50,6 @@ export const signUpWithCredentials = async (
     email,
     verificationToken
   )
-
-  // const verificationToken = await generateVerificationToken(email)
-  
-  // await sendVerificationEmail(
-  //   verificationToken.email,
-  //   verificationToken.token
-  // )
   
   return { success: t("success.confirmationSent") }
 }
