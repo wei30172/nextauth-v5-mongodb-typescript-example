@@ -12,7 +12,7 @@ export function getSignInFormSchema(t?: (key: string) => string) {
         .string()
         .min(1, t?.("password.required") || "Password is required")
         .min(8, t?.("password.invalid") || "Password must be 8+ characters"),
-        code: z.optional(z.string())
+        code: z.string().optional()
     })
 }
 export type SignInFormValues = z.infer<ReturnType<typeof getSignInFormSchema>>
@@ -82,14 +82,12 @@ const validatePassword = (t?: (key: string) => string) =>
 export function getSettingsFormSchema(t?: (key: string) => string) {
   return z
     .object({
-      name: z.optional(z.string()),
-      email: z.optional(
-        z.string().email(t?.("email.invalid") || "Invalid email")
-      ),
-      password: z.optional(validatePassword(t)),
-      newPassword: z.optional(validatePassword(t)),
-      role: z.enum([UserRole.ADMIN, UserRole.USER]),
-      isTwoFactorEnabled: z.optional(z.boolean())
+      name: z.string().optional(),
+      email: z.string().email(t?.("email.invalid") || "Invalid email").optional(),
+      password: validatePassword(t).optional(),
+      newPassword: validatePassword(t).optional(),
+      role: z.nativeEnum(UserRole),
+      isTwoFactorEnabled: z.boolean().optional()
     })
     .refine(
       (data) => !(data.newPassword && !data.password),
