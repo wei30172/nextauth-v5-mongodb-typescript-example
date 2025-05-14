@@ -19,12 +19,12 @@ export const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: [UserRole.USER, UserRole.ADMIN],
+    enum: Object.values(UserRole),
     default: UserRole.USER
   },
   provider: {
     type: String,
-    enum: [UserProvider.CREDENTIALS, UserProvider.GOOGLE],
+    enum: Object.values(UserProvider),
     default: UserProvider.CREDENTIALS
   },
   emailVerified: {

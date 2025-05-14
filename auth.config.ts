@@ -5,8 +5,8 @@ import Google from "next-auth/providers/google"
 
 import { UserRole, UserProvider } from "@/lib/database/models/types"
 import { getSignInFormSchema } from "@/lib/validations/auth"
-import { fetchUserByEmail, fetchUserById, signInWithOauth } from "@/lib/api-handler/user"
-import { fetchConfirmationByUserId, deleteConfirmationById } from "@/lib/api-handler/twofac"
+import { fetchUserByEmail, fetchUserById, signInWithOauth } from "@/lib/api-client/user"
+import { fetchConfirmationByUserId, deleteConfirmationById } from "@/lib/api-client/twofac"
 
 export default {
   session: { strategy: "jwt" },
