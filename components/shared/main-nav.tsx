@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
-import { mainNavLinks } from "@/constants"
+import { mainNavLinks } from "@/constants/nav-links"
 
 import { AiOutlineMenu } from "react-icons/ai"
 

@@ -5,7 +5,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 const baseURL = process.env.NEXT_PUBLIC_APP_URL
 
 const emailURL = process.env.RESEND_EMAIL_URL
-// todo: Only send emails to the "Resend" registered email if a domain is set and purchased.
+// TODO: Only send emails to the "Resend" registered email if a domain is set and purchased.
 
 export const sendVerificationEmail = async (
   email: string, 

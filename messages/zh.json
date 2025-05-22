@@ -49,8 +49,15 @@
   },
   "ErrorCard": {
     "ui": {
-      "header": "哎呀！出了點問題！",
-      "backButton": "返回登入頁"
+      "headerUnknownError": "哎呀！發生了一些問題",
+      "headerAccessDenied": "錯誤的登入資訊",
+      "headerProviderMismatch": "登入衝突",
+      "headerEmailUnverified": "電子郵件尚未驗證",
+      "backButton": "返回登入頁",
+      "unknownError": "發生未知錯誤，請稍後再試。",
+      "accessDenied": "登入資訊有誤，請確認帳號和密碼。",
+      "providerMismatch": "此帳號已透過其他登入方式註冊。",
+      "emailUnverified": "請先完成電子郵件驗證後再登入。"
     }
   },
   "SignInForm": {

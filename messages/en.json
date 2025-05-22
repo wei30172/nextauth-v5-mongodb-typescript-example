@@ -49,8 +49,15 @@
   },
   "ErrorCard": {
     "ui": {
-      "header": "Oops! Something went wrong!",
-      "backButton": "Back to sign in"
+      "headerUnknownError": "Oops! Something went wrong",
+      "headerAccessDenied": "Invalid Login Information",
+      "headerProviderMismatch": "Login Conflict",
+      "headerEmailUnverified": "Email Not Verified",
+      "backButton": "Back to sign in",
+      "unknownError": "An unexpected error occurred. Please try again later.",
+      "accessDenied": "Your login information is incorrect. Please check your login details.",
+      "providerMismatch": "This account is already registered with a different sign-in method.",
+      "emailUnverified": "Please verify your email address before signing in."
     }
   },
   "SignInForm": {

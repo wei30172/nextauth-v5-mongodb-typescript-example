@@ -7,13 +7,15 @@ import { UserRole, UserProvider } from "@/lib/database/models/types"
 import { getSignInFormSchema } from "@/lib/validations/auth"
 import { fetchUserByEmail, fetchUserById, signInWithOauth } from "@/lib/api-client/user"
 import { fetchConfirmationByUserId, deleteConfirmationById } from "@/lib/api-client/twofac"
+import { routes } from "@/routes"
+import { AuthErrorCode } from "@/constants/auth-error"
 
 export default {
   session: { strategy: "jwt" },
   secret: process.env.AUTH_SECRET,
   pages: {
-    signIn: "/signin", // app/signin
-    error: "/error", // app/error
+    signIn: routes.defaultSignInPage,
+    error: routes.defaultErrorPage
   },
   providers: [
     Google({
@@ -51,7 +53,21 @@ export default {
     async signIn({ user, account, profile }) {
       // console.log({user})
       // console.log({account, profile})
-      if (account && account?.provider !== UserProvider.CREDENTIALS && profile) {
+      const isOauth = account?.provider && account.provider !== UserProvider.CREDENTIALS
+      const email = profile?.email
+
+      if (isOauth && email) {
+        const existingUser = await fetchUserByEmail(email)
+
+        if (existingUser && existingUser.provider !== account.provider) {
+          return `${routes.defaultErrorPage}?error=${AuthErrorCode.PROVIDER_MISMATCH}`
+        }
+
+        // TODO: Test profile.email_verified behavior across providers (e.g., Google vs GitHub)
+        if (account.provider === UserProvider.GOOGLE && !profile.email_verified) {
+          return `${routes.defaultErrorPage}?error=${AuthErrorCode.EMAIL_UNVERIFIED}`
+        }
+
         return await signInWithOauth({account, profile})
       }
 
