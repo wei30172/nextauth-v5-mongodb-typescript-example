@@ -7,7 +7,7 @@ import { ITwoFactorConfirmation } from "@/lib/database/models/types"
 
 // GET /api/twofac/user/:userId
 export async function GET(_: NextRequest, { params }: { params: { userId: string } }) {
-  const authError = authorizeInternalRequest(_)
+  const authError = await authorizeInternalRequest(_)
   if (authError) return authError
   
   await connectDB()

@@ -1,3 +1,5 @@
+"use client"
+
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { AuthErrorCode } from "@/constants/auth-error"

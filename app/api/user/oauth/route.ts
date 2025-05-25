@@ -7,7 +7,7 @@ import { IUser } from "@/lib/database/models/types"
 
 // PUT /api/user/oauth
 export async function PUT(req: NextRequest) {
-  const authError = authorizeInternalRequest(req)
+  const authError = await authorizeInternalRequest(req)
   if (authError) return authError
 
   await connectDB()

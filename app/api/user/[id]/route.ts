@@ -7,7 +7,7 @@ import { IUser } from "@/lib/database/models/types"
 
 // GET /api/user/:id
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const authError = authorizeInternalRequest(req)
+  const authError = await authorizeInternalRequest(req)
   if (authError) return authError
 
   await connectDB()

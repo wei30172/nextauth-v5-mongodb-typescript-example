@@ -1,31 +1,53 @@
+import { JWTPayload, jwtVerify } from "jose"
 import { NextRequest, NextResponse } from "next/server"
-import jwt from "jsonwebtoken"
 
 const INTERNAL_KEY = process.env.INTERNAL_API_KEY!
-const BEARER_SECRET = process.env.INTERNAL_API_SECRET!
+const BEARER_SECRET = new TextEncoder().encode(process.env.INTERNAL_API_SECRET!)
+
+interface VerifiedBearerPayload {
+  service: string
+}
 
 export const verifyInternalKey = (req: NextRequest): boolean => {
   const key = req.headers.get("x-internal-key")
   return !!key && key === INTERNAL_KEY
 }
 
-export const verifyBearerToken = (req: NextRequest): { service: string } | null => {
+export const verifyBearerToken = async (req: NextRequest): Promise<VerifiedBearerPayload | null> => {
   const authHeader = req.headers.get("authorization")
   if (!authHeader?.startsWith("Bearer ")) return null
 
   const token = authHeader.split(" ")[1]
   try {
-    return jwt.verify(token, BEARER_SECRET) as { service: string }
-  } catch {
+    const { payload } = await jwtVerify(token, BEARER_SECRET)
+
+    if (typeof (payload as JWTPayload).service === "string") {
+      return payload as unknown as VerifiedBearerPayload
+    }
+
+    return null
+  } catch (err) {
+    console.error("[JWT_VERIFY_FAIL]", (err as Error).message)
     return null
   }
 }
 
-export const authorizeInternalRequest = (req: NextRequest): NextResponse | null => {
+export const authorizeInternalRequest = async (
+  req: NextRequest,
+  allowedServices?: string[]
+): Promise<NextResponse | null> => {
   const isValidKey = verifyInternalKey(req)
-  const payload = verifyBearerToken(req)
+  const payload = await verifyBearerToken(req)
 
-  if (isValidKey || payload) return null
+  if (isValidKey) return null
+
+  if (payload) {
+    if (allowedServices && !allowedServices.includes(payload.service)) {
+      console.warn(`[SERVICE_NOT_ALLOWED] service=${payload.service}`)
+      return NextResponse.json({ error: "Service not allowed" }, { status: 403 })
+    }
+    return null
+  }
 
   return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 }

@@ -7,7 +7,7 @@ import { ITwoFactorConfirmation } from "@/lib/database/models/types"
 
 // DELETE /api/twofac/:id
 export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
-  const authError = authorizeInternalRequest(_)
+  const authError = await authorizeInternalRequest(_)
   if (authError) return authError
 
   await connectDB()

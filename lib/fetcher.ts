@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken"
+import { SignJWT } from "jose"
 
 interface FetcherOptions extends RequestInit {
   baseUrl?: string
@@ -44,29 +44,45 @@ export type AuthStrategy = "internal-key" | "bearer"
 interface InternalApiFetcherProps {
   endpoint: string
   options?: RequestInit
-  authStrategy?: AuthStrategy // "internal-key" is default
-  serviceName?: string // optional for bearer token payload
+  authStrategy?: AuthStrategy // default: "internal-key"
+  serviceName?: string // for bearer token payload
 }
 
-export const internalApiFetcher = <T>({
+// Generates headers for internal API auth based on strategy
+const generateInternalAuthHeaders = async (
+  strategy: AuthStrategy,
+  serviceName: string
+): Promise<Record<string, string>> => {
+  if (strategy === "internal-key") {
+    return {
+      "x-internal-key": process.env.INTERNAL_API_KEY!
+    }
+  }
+
+  const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_INTERNAL_API_SECRET!)
+
+  const token = await new SignJWT({ service: serviceName })
+    .setProtectedHeader({ alg: "HS256" })
+    .setExpirationTime("10m")
+    .sign(secret)
+
+  return {
+    Authorization: `Bearer ${token}`
+  }
+}
+
+// For APIs that return JSON (default)
+export const internalApiFetcher = async <T>({
   endpoint,
   options,
   authStrategy = "internal-key",
   serviceName = "internal-service"
 }: InternalApiFetcherProps) => {
+  const authHeaders = await generateInternalAuthHeaders(authStrategy, serviceName)
+
   const headers: Record<string, string> = {
-    ...(options?.headers as Record<string, string>)
-  }
-  
-  if (authStrategy === "internal-key") {
-    headers["x-internal-key"] = process.env.INTERNAL_API_KEY!
-  } else {
-    const token = jwt.sign(
-      { service: serviceName },
-      process.env.INTERNAL_API_SECRET!,
-      { expiresIn: "10m" }
-    )
-    headers["Authorization"] = `Bearer ${token}`
+    ...(options?.headers as Record<string, string>),
+    ...authHeaders
   }
 
   return fetcher<T>(endpoint, {
@@ -76,6 +92,27 @@ export const internalApiFetcher = <T>({
   })
 }
 
+// For APIs that return stream/blob/raw Response
+export const rawInternalApiFetcher = async ({
+  endpoint,
+  options,
+  authStrategy = "internal-key",
+  serviceName = "internal-service"
+}: InternalApiFetcherProps): Promise<Response> => {
+  const authHeaders = await generateInternalAuthHeaders(authStrategy, serviceName)
+
+  const headers: Record<string, string> = {
+    ...(options?.headers as Record<string, string>),
+    ...authHeaders
+  }
+
+  return fetch(`${process.env.NEXT_PUBLIC_APP_URL}/${endpoint}`, {
+    ...options,
+    headers
+  })
+}
+
+// External API
 interface ExternalApiFetcherProps {
   apiUrl: string
   endpoint: string
