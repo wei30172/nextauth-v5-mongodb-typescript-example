@@ -5,7 +5,7 @@ import Google from "next-auth/providers/google"
 
 import { UserRole, UserProvider } from "@/lib/database/models/types"
 import { getSignInFormSchema } from "@/lib/validations/auth"
-import { fetchUserByEmail, fetchUserById, signInWithOauth } from "@/lib/api-client/user"
+import { getUserByEmail, getUserById, signInWithOauth } from "@/lib/api-client/user"
 import { fetchConfirmationByUserId, deleteConfirmationById } from "@/lib/api-client/twofac"
 import { routes } from "@/routes"
 import { AuthErrorCode } from "@/constants/auth-error"
@@ -29,7 +29,7 @@ export default {
         if (validatedFields.success) {
           const { email, password } = validatedFields.data
 
-          const existingUser = await fetchUserByEmail(email)
+          const existingUser = await getUserByEmail(email)
           // console.log({existingUser})
 
           if (!existingUser || !existingUser.password) return null
@@ -57,7 +57,7 @@ export default {
       const email = profile?.email
 
       if (isOauth && email) {
-        const existingUser = await fetchUserByEmail(email)
+        const existingUser = await getUserByEmail(email)
 
         if (existingUser && existingUser.provider !== account.provider) {
           return `${routes.defaultErrorPage}?error=${AuthErrorCode.PROVIDER_MISMATCH}`
@@ -72,7 +72,7 @@ export default {
       }
 
       if (account?.provider === UserProvider.CREDENTIALS && user._id) {
-        const existingUser = await fetchUserById(user._id)
+        const existingUser = await getUserById(user._id)
         // console.log({existingUser})
 
         if (!existingUser?.emailVerified) return false
@@ -93,7 +93,7 @@ export default {
       // console.log({token})
       if (!token.email) return token
 
-      const existingUser = await fetchUserByEmail(token.email)
+      const existingUser = await getUserByEmail(token.email)
 
       if (!existingUser) return token
 

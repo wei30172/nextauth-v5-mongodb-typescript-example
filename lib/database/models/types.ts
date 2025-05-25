@@ -24,7 +24,7 @@ export interface IUser {
   updatedAt: Date
 }
 
-export interface TwoFactorConfirmation {
+export interface ITwoFactorConfirmation {
   _id: string
   userId: string
 }

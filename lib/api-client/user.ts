@@ -2,14 +2,11 @@ import { Account, Profile } from "next-auth"
 import { internalApiFetcher } from "@/lib/fetcher"
 import { IUser } from "@/lib/database/models/types"
 
-export const fetchUserByEmail = async (email: string): Promise<IUser | null> => {
+export const getUserByEmail = async (email: string): Promise<IUser | null> => {
   try {
     const user = await internalApiFetcher<IUser>({
-      endpoint: "api/user/fetch-by-email",
-      options: {
-        method: "POST",
-        body: JSON.stringify({ email })
-      }
+      endpoint: `api/user?email=${encodeURIComponent(email)}`,
+      options: { method: "GET" }
     })
     // console.log({user})
 
@@ -19,14 +16,11 @@ export const fetchUserByEmail = async (email: string): Promise<IUser | null> => 
   }
 }
 
-export const fetchUserById = async (id: string): Promise<IUser | null> => {
+export const getUserById = async (id: string): Promise<IUser | null> => {
   try {
     const user = await internalApiFetcher<IUser>({
-      endpoint: "api/user/fetch-by-id",
-      options: {
-        method: "POST",
-        body: JSON.stringify({ id })
-      }
+      endpoint: `api/user/${id}`,
+      options: { method: "GET" }
     })
     // console.log({user})
     
@@ -41,15 +35,17 @@ interface SignInWithOauthParams {
   profile: Profile & { picture?: string }
 }
 
-export const signInWithOauth = async (params: SignInWithOauthParams): Promise<boolean> => {
+export const signInWithOauth = async (
+  params: SignInWithOauthParams
+): Promise<boolean> => {
   const { account, profile } = params
   // console.log({account, profile})
 
   try {
     const user = await internalApiFetcher<IUser>({
-      endpoint: "api/user/signIn-with-oauth",
+      endpoint: "api/user/oauth",
       options: {
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify({account, profile})
       }
     })

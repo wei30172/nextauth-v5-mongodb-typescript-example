@@ -1,16 +1,13 @@
 import { internalApiFetcher } from "@/lib/fetcher"
-import { TwoFactorConfirmation } from "@/lib/database/models/types"
+import { ITwoFactorConfirmation } from "@/lib/database/models/types"
 
 export const fetchConfirmationByUserId = async (
   userId: string
-): Promise<TwoFactorConfirmation | null> => {
+): Promise<ITwoFactorConfirmation | null> => {
   try {
-    const confirmation = await internalApiFetcher<TwoFactorConfirmation>({
-      endpoint: "api/twofac/fetch-by-userId",
-      options: {
-        method: "POST",
-        body: JSON.stringify({ userId })
-      }
+    const confirmation = await internalApiFetcher<ITwoFactorConfirmation>({
+      endpoint: `api/twofac/user/${userId}`,
+      options: { method: "GET" }
     })
     // console.log({confirmation})
     return confirmation ?? null
@@ -21,10 +18,7 @@ export const fetchConfirmationByUserId = async (
 
 export const deleteConfirmationById = async (id: string) => {
   await internalApiFetcher<void>({
-    endpoint: "api/twofac/delete-by-id",
-    options: {
-      method: "DELETE",
-      body: JSON.stringify({ id })
-    }
+    endpoint: `api/twofac/${id}`,
+    options: { method: "DELETE" }
   })
 }

@@ -36,7 +36,7 @@ export const signInWithCredentials = async (
   // console.log({existingUser})
   
   if (!existingUser || !existingUser.email || !existingUser.password) {
-    return { error: t("error.emailNotFound") }
+    return { error: t("error.invalidCredentials") }
   }
 
   if (!existingUser.emailVerified) {

@@ -5,27 +5,27 @@ import connectDB from "@/lib/database/db"
 import { User } from "@/lib/database/models/auth.model"
 import { IUser } from "@/lib/database/models/types"
 
-// api/user/fetch-by-email
-export async function POST(req: NextRequest) {
+// GET /api/user?email=xxx
+export async function GET(req: NextRequest) {
   const authError = authorizeInternalRequest(req)
   if (authError) return authError
   
   await connectDB()
   
   try {
-    const { email } = await req.json()
-  
-    const user = await User.findOne({email})
-
-    if (user) {
-      const userObject: IUser = {
-        ...user.toObject(),
-        _id: user._id.toString()
-      }
-      return NextResponse.json(userObject)
+    const email = req.nextUrl.searchParams.get("email")
+    if (!email) {
+      return NextResponse.json({ error: "Missing email" }, { status: 400 })
     }
 
-    return NextResponse.json(null)
+    const user = await User.findOne({email})
+    if (!user) return NextResponse.json(null)
+
+    return NextResponse.json({
+      ...user.toObject(),
+      _id: user._id.toString()
+    } as IUser)
+    
   } catch (error) {
     return NextResponse.json(null, { status: 500 })
   }
