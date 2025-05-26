@@ -14,10 +14,12 @@ export const verifyInternalKey = (req: NextRequest): boolean => {
 }
 
 export const verifyBearerToken = async (req: NextRequest): Promise<VerifiedBearerPayload | null> => {
-  const authHeader = req.headers.get("authorization")
-  if (!authHeader?.startsWith("Bearer ")) return null
+  const authHeader = req.headers.get("authorization")?.trim()
+  if (!authHeader) return null
 
-  const token = authHeader.split(" ")[1]
+  const [scheme, token] = authHeader.split(" ")
+  if (scheme !== "Bearer" || !token) return null
+  
   try {
     const { payload } = await jwtVerify(token, BEARER_SECRET)
 
