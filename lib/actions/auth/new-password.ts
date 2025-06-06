@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server"
 import connectDB from "@/lib/database/db"
 import { verifyToken, isTokenError } from "@/lib/token"
 import { User } from "@/lib/database/models/auth.model"
-import { UserProvider } from "@/lib/database/models/types"
+import { UserProvider } from "@/lib/database/types"
 import {
   NewPasswordFormValues,
   getNewPasswordFormSchema

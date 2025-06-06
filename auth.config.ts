@@ -3,7 +3,7 @@ import type { NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
 
-import { UserRole, UserProvider } from "@/lib/database/models/types"
+import { UserRole, UserProvider } from "@/lib/database/types"
 import { getSignInFormSchema } from "@/lib/validations/auth"
 import { getUserByEmail, getUserById, signInWithOauth } from "@/lib/api-client/user"
 import { fetchConfirmationByUserId, deleteConfirmationById } from "@/lib/api-client/twofac"

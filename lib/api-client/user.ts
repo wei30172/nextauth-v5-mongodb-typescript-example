@@ -1,6 +1,6 @@
 import { Account, Profile } from "next-auth"
 import { internalApiFetcher } from "@/lib/fetcher"
-import { IUser } from "@/lib/database/models/types"
+import { IUser } from "@/lib/database/types"
 
 export const getUserByEmail = async (email: string): Promise<IUser | null> => {
   try {

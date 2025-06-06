@@ -1,5 +1,5 @@
 import { internalApiFetcher } from "@/lib/fetcher"
-import { ITwoFactorConfirmation } from "@/lib/database/models/types"
+import { ITwoFactorConfirmation } from "@/lib/database/types"
 
 export const fetchConfirmationByUserId = async (
   userId: string

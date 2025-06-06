@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { authorizeInternalRequest } from "@/middleware/internal-auth"
 import connectDB from "@/lib/database/db"
 import { User } from "@/lib/database/models/auth.model"
-import { IUser } from "@/lib/database/models/types"
+import { IUser } from "@/lib/database/types"
 
 // GET /api/user?email=xxx
 export async function GET(req: NextRequest) {

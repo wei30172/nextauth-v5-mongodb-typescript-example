@@ -1,4 +1,4 @@
-import { UserRole } from "@/lib/database/models/types"
+import { UserRole } from "@/lib/database/types"
 import NextAuth, {type DefaultSession, type User as NextAuthUser } from "next-auth"
 
 export interface ExtendedUser extends NextAuthUser {

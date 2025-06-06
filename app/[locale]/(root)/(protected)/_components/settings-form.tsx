@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { useTranslations } from "next-intl"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useSession } from "next-auth/react"
-import { UserRole, UserProvider } from "@/lib/database/models/types"
+import { UserRole, UserProvider } from "@/lib/database/types"
 import {
   SettingsFormValues,
   getSettingsFormSchema
